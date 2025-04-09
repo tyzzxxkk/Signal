@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGNEL | 편지 보내기</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f9fafb;
+        }
+        header {
+            background-color: #4f46e5;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 28px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #4f46e5;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4f46e5;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>SIGNEL</header>
+    <div class="container">
+        <h2>편지 보내기</h2>
+        <form action="/send_letter" method="POST">
+            <label for="receiver_name">받는 사람 이름</label>
+            <input type="text" id="receiver_name" name="receiver_name" required>
+
+            <label for="receiver_id">받는 사람 학번</label>
+            <input type="text" id="receiver_id" name="receiver_id" required>
+
+            <label for="message">내용</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+
+            <button type="submit">보내기</button>
+        </form>
+
+        <a href="/">메인으로 돌아가기</a>
+    </div>
+</body>
+</html>

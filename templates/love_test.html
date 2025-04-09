@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>궁합 테스트</title>
+</head>
+<body>
+    <h1>이름 궁합 테스트</h1>
+    <form method="post">
+        나의 이름: <input type="text" name="name1"><br>
+        상대 이름: <input type="text" name="name2"><br>
+        <button type="submit">테스트하기</button>
+    </form>
+
+    {% if result %}
+        <h2>결과</h2>
+        <p>{{ result.name1 }} ❤️ {{ result.name2 }}</p>
+        <p>궁합 점수: {{ result.score }}%</p>
+        <p>결과 메시지: {{ result.msg }}</p>
+    {% endif %}
+</body>
+</html>

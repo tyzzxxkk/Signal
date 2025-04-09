@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGNEL | 회원가입</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .register-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 360px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 32px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4f46e5;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        a {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-box">
+        <h2>회원가입</h2>
+        <form action="/register" method="post">
+            <input type="text" name="email" placeholder="이메일 (@e-mirim.hs.kr)" required>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <button type="submit">가입하기</button>
+        </form>
+        <a href="/login">이미 계정이 있나요?</a>
+    </div>
+</body>
+</html>

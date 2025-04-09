@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGNEL | 편지 보내기</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f3f4f6;
+        }
+        header {
+            background-color: #4f46e5;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 28px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input, textarea {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>SIGNEL</header>
+    <div class="container">
+        <h2>편지 보내기</h2>
+
+        <form action="/send_letter" method="POST">
+            <input type="text" name="receiver" placeholder="받는 사람 이메일(@e-mirim.hs.kr)" required>
+            <textarea name="content" placeholder="편지 내용을 입력하세요." rows="6" required></textarea>
+            <button type="submit">보내기</button>
+        </form>
+
+        <a href="/">메인으로 돌아가기</a>
+    </div>
+</body>
+</html>

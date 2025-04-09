@@ -70,3 +70,13 @@ def send_letter():
         flash('편지가 성공적으로 전송되었습니다!', 'success')
         return redirect(url_for('main.home'))
     return render_template('send_letter.html')
+
+# 에러 처리
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('500.html'), 500

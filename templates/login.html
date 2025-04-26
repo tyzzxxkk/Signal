@@ -7,16 +7,31 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #F8F9FA;
+            position: relative;
             font-family: "Pretendard";
-            color: #343A40;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('../img/heart.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            filter: blur(16px);
+            z-index: -1;
         }
         .login-container {
-            background-color: #fff;
+            background-color: #ffe1f8bb;
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -28,9 +43,7 @@
             margin-bottom: 20px;
         }
         input {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
+            width: 95%;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;

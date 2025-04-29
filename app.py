@@ -7,10 +7,10 @@ from extensions import db, mail, login_manager
 from routes import main_bp  # 메인 라우터 블루프린트
 from auth import auth_bp   # 인증 라우터 블루프린트
 
-# Flask 확장 모듈 초기화
-db = SQLAlchemy()
-mail = Mail()
-login_manager = LoginManager()
+# # Flask 확장 모듈 초기화
+# db = SQLAlchemy()
+# mail = Mail()
+# login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)

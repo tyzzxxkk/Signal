@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SIGNAL | 로그인</title>
     <style>
+        /* 기존 CSS 유지 */
         body {
             margin: 0;
             padding: 0;
@@ -13,7 +14,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-
         }
 
         body::before {
@@ -30,6 +30,7 @@
             filter: blur(16px);
             z-index: -1;
         }
+
         .login-container {
             background-color: #ffe1f8bb;
             padding: 40px;
@@ -38,10 +39,12 @@
             text-align: center;
             width: 400px;
         }
+
         h2 {
             font-size: 32px;
             margin-bottom: 20px;
         }
+
         input {
             width: 95.5%;
             padding: 8px;
@@ -50,6 +53,7 @@
             font-size: 14px;
             margin-top: 10px;
         }
+
         button {
             width: 100%;
             padding: 12px;
@@ -62,13 +66,16 @@
             margin-top: 15px;
             transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #ff4d68;
         }
+
         .register {
             margin-top: 30px;
             font-size: 14px;
         }
+
         .register a {
             color: #FF6B81;
             text-decoration: underline;
@@ -78,12 +85,11 @@
 <body>
     <div class="login-container">
         <h2>로그인</h2>
-        <form method="post">
+        <form method="post" action="{{ url_for('auth.login') }}">
             {{ form.hidden_tag() }}
-            <input type="text" name="email" placeholder="이메일을 입력하세요" required>
-                <input type="password" name="password" id="password" placeholder="비밀번호를 입력하세요" required>
-
-            <button class="login" type="submit">로그인</button>
+            {{ form.email(size=32, placeholder="이메일을 입력하세요", required=True) }}
+            {{ form.password(size=32, placeholder="비밀번호를 입력하세요", required=True) }}
+            {{ form.submit(class_="login") }}
         </form>
         <div class="register">
             계정이 없으신가요? <a href="{{ url_for('auth.register') }}">회원가입</a>

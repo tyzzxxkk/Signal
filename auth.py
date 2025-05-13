@@ -1,22 +1,20 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user
-from extensions import db, login_manager  
+from werkzeug.security import generate_password_hash, check_password_hash
+from extensions import db, login_manager
 from models import User
 from forms import LoginForm, RegisterForm
 
 auth_bp = Blueprint('auth', __name__)
 
-# 유저 로딩 함수
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# 로그인
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))  # 이미 로그인 상태면 홈으로
+        return redirect(url_for('main.home'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -30,7 +28,6 @@ def login():
 
     return render_template('login.html', form=form)
 
-# 회원가입
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -51,7 +48,6 @@ def register():
 
     return render_template('register.html', form=form)
 
-# 로그아웃
 @auth_bp.route('/logout')
 def logout():
     logout_user()

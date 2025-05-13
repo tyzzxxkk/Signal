@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGNAL | 회원가입</title>
     <style>
+        /* 기존 CSS 유지 */
         body {
             margin: 0;
             padding: 0;
@@ -85,13 +85,13 @@
 <body>
     <div class="register-container">
         <h2>SIGNAL</h2>
-        <form action="/register" method="post">
-            <input type="text" name="email" placeholder="이메일을 입력하세요" required>
-                <input type="password" name="password" id="password" placeholder="비밀번호를 입력하세요" required>
-
-            <button type="submit">가입하기</button>
+        <form method="post" action="{{ url_for('auth.register') }}">
+            {{ form.hidden_tag() }}
+            {{ form.email(size=32, placeholder="이메일을 입력하세요", required=True) }}
+            {{ form.password(size=32, placeholder="비밀번호를 입력하세요", required=True) }}
+            {{ form.confirm(size=32, placeholder="비밀번호를 다시 입력하세요", required=True) }}
+            {{ form.submit() }}
         </form>
-
         <div class="login">
             계정이 있으신가요? <a href="{{ url_for('auth.login') }}">로그인</a>
         </div>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>SIGNAL | 회원가입</title>
     <style>
-        /* 기존 CSS 유지 */
         body {
             margin: 0;
             padding: 0;
@@ -54,7 +53,7 @@
             margin-top: 10px;
         }
 
-        .register-container button {
+        button {
             width: 100%;
             padding: 12px;
             background-color: #FF6B81;
@@ -67,7 +66,7 @@
             transition: background-color 0.3s;
         }
 
-        .register-container button:hover {
+        button:hover {
             background-color: #ff4d68;
         }
 
@@ -80,18 +79,32 @@
             color: #FF6B81;
             text-decoration: underline;
         }
+
+        .flash {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="register-container">
         <h2>SIGNAL</h2>
-        <form method="post" action="{{ url_for('auth.register') }}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="post">
             {{ form.hidden_tag() }}
-            {{ form.email(size=32, placeholder="이메일을 입력하세요", required=True) }}
-            {{ form.password(size=32, placeholder="비밀번호를 입력하세요", required=True) }}
-            {{ form.confirm(size=32, placeholder="비밀번호를 다시 입력하세요", required=True) }}
-            {{ form.submit() }}
-        </form>
+            {{ form.email(class="form-input", placeholder="이메일을 입력하세요") }}
+            {{ form.password(class="form-input", placeholder="비밀번호를 입력하세요") }}
+            {{ form.confirm(class="form-input", placeholder="비밀번호 확인") }}
+        
+            <button type="submit" name="submit" class="register-button">회원가입</button>
+        </form>        
         <div class="login">
             계정이 있으신가요? <a href="{{ url_for('auth.login') }}">로그인</a>
         </div>

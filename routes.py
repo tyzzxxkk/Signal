@@ -14,7 +14,8 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def home():
     if current_user.is_authenticated:
-        return render_template('home.html', user=current_user)
+        email_name = current_user.email.split('@')[0] 
+        return render_template('home.html', user_name=email_name)
     return render_template('index.html')
 
 @main_bp.route('/love_test', methods=['GET', 'POST'])

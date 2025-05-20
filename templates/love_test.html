@@ -1,21 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>궁합 테스트</title>
+    <meta charset="UTF-8">
+    <title>SIGNAL | 이름 궁합 테스트</title>
+    <style> 
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Pretendard", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            filter: blur(16px);
+            z-index: -1;
+        }
+
+        .test-container {
+            background-color: #ffe1f8bb;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #ff4d68;
+        }
+
+        input[type="text"] {
+            width: 95.5%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #FF6B81;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff4d68;
+        }
+
+        .result {
+            margin-top: 30px;
+            font-size: 16px;
+        }
+
+        .heart {
+            font-size: 20px;
+            color: #e91e63;
+            margin: 10px 0;
+        }
+
+        .score {
+            font-weight: bold;
+            margin: 8px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>이름 궁합 테스트</h1>
-    <form method="post">
-        나의 이름: <input type="text" name="name1"><br>
-        상대 이름: <input type="text" name="name2"><br>
-        <button type="submit">테스트하기</button>
-    </form>
+    <div class="test-container">
+        <h1>이름 궁합 테스트</h1>
+        <form method="post">
+            <input type="text" name="name1" placeholder="나의 이름">
+            <input type="text" name="name2" placeholder="상대 이름">
+            <button type="submit">💘 테스트하기</button>
+        </form>
 
-    {% if result %}
-        <h2>결과</h2>
-        <p>{{ result.name1 }} ❤️ {{ result.name2 }}</p>
-        <p>궁합 점수: {{ result.score }}%</p>
-        <p>결과 메시지: {{ result.msg }}</p>
-    {% endif %}
+        {% if result %}
+            <div class="result">
+                <p class="heart">{{ result.name1 }} ❤️ {{ result.name2 }}</p>
+                <p class="score">궁합 점수: {{ result.score }}%</p>
+                <p>{{ result.msg }}</p>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>

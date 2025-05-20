@@ -7,12 +7,28 @@
     <style>
         body {
             margin: 0;
-            font-family: sans-serif;
-            background-color: #f9fafb;
+            padding: 0;
+            position: relative;
+            font-family: "Pretendard";
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            filter: blur(16px);
+            z-index: -1;
         }
         .container {
             text-align: center;
@@ -31,21 +47,21 @@
             display: inline-block;
             margin: 10px;
             padding: 12px 30px;
-            background-color: #4f46e5;
+            background-color: #FF6B81;
             color: white;
             text-decoration: none;
             border-radius: 8px;
             transition: 0.2s;
         }
         .btn:hover {
-            background-color: #4338ca;
+            background-color: #ff4d68;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>환영합니다, {{ user_name }}님!</h1>
-        <p>SIGNEL과 함께 다양한 기능을 이용해보세요.</p>
+        <h1>SIGNAL</h1>
+        <p>{{ user_name }}님! SIGNAL과 함께 다양한 기능을 이용해보세요.</p>
 
         <div>
             <a href="/love_test" class="btn">궁합 테스트</a>

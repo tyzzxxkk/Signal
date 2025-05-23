@@ -36,10 +36,10 @@
             text-align: center;
         }
 
-        h1 {
+        h2 {
             font-size: 32px;
             margin-bottom: 20px;
-            color: #ff4d68;
+            font-weight: 600;
         }
 
         input[type="text"] {
@@ -87,11 +87,11 @@
 </head>
 <body>
     <div class="test-container">
-        <h1>이름 궁합 테스트</h1>
+        <h2>이름 궁합 테스트</h2>
         <form method="post">
             <input type="text" name="name1" placeholder="나의 이름">
             <input type="text" name="name2" placeholder="상대 이름">
-            <button type="submit">💘 테스트하기</button>
+            <button type="submit">테스트하기</button>
         </form>
 
         {% if result %}

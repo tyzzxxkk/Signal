@@ -1,106 +1,150 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>SIGNAL | 이름 궁합 테스트</title>
-    <style> 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Pretendard", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            position: relative;
-        }
+  <meta charset="UTF-8" />
+  <title>SIGNAL | 이름 궁합 테스트</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
 
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-color: rgba(255, 255, 255, 0.5);
-            filter: blur(16px);
-            z-index: -1;
-        }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
+      background-size: cover;
+      background-position: center;
+      background-color: rgba(255, 255, 255, 0.5);
+      filter: blur(16px);
+      z-index: -1;
+    }
 
-        .test-container {
-            background-color: #ffe1f8bb;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 400px;
-            text-align: center;
-        }
+    .test-container {
+      background-color: #ffe1f8bb;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 420px;
+      text-align: center;
+    }
 
-        h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
+    .title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #333;
+    }
 
-        input[type="text"] {
-            width: 95.5%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            margin-top: 10px;
-        }
+    .name-inputs {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #FF6B81;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background-color 0.3s;
-        }
+    .name-inputs input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+    }
 
-        button:hover {
-            background-color: #ff4d68;
-        }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #FF6B81;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
 
-        .result {
-            margin-top: 30px;
-            font-size: 16px;
-        }
+    button:hover {
+      background-color: #ff4d68;
+    }
 
-        .heart {
-            font-size: 20px;
-            color: #e91e63;
-            margin: 10px 0;
-        }
+    .result {
+      margin-top: 30px;
+      font-size: 16px;
+    }
 
-        .score {
-            font-weight: bold;
-            margin: 8px 0;
-        }
-    </style>
+    .heart {
+      font-size: 20px;
+      color: #e91e63;
+      margin: 10px 0;
+    }
+
+    .score {
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .falling-heart {
+      position: absolute;
+      top: -20px;
+      color: #ff6b81;
+      font-size: 52px;
+      animation: fall linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="test-container">
-        <h2>이름 궁합 테스트</h2>
-        <form method="post">
-            <input type="text" name="name1" placeholder="나의 이름">
-            <input type="text" name="name2" placeholder="상대 이름">
-            <button type="submit">테스트하기</button>
-        </form>
+  <div class="test-container">
+    <div class="title">우리 이름은… 몇 점?</div>
+    <form method="post">
+      <div class="name-inputs">
+        <input type="text" name="name1" placeholder="이름 1">
+        <input type="text" name="name2" placeholder="이름 2">
+      </div>
+      <button type="submit">테스트하기</button>
+    </form>
 
-        {% if result %}
-            <div class="result">
-                <p class="heart">{{ result.name1 }} ❤️ {{ result.name2 }}</p>
-                <p class="score">궁합 점수: {{ result.score }}%</p>
-                <p>{{ result.msg }}</p>
-            </div>
-        {% endif %}
-    </div>
+    {% if result %}
+      <div class="result">
+        <p class="heart">{{ result.name1 }} ❤️ {{ result.name2 }}</p>
+        <p class="score">궁합 점수: {{ result.score }}%</p>
+        <p>{{ result.msg }}</p>
+      </div>
+    {% endif %}
+  </div>
+  <script>
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("falling-heart");
+      heart.innerText = "🩷";
+
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+      heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 5000);
+    }
+
+    setInterval(createHeart, 300);
+  </script>
 </body>
 </html>

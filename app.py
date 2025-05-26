@@ -3,9 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
 from config import Config
-from extensions import db, mail, login_manager
+from extensions import db, mail, login_manager, migrate
 from routes import main_bp  # 메인 라우터 블루프린트
 from auth import auth_bp   # 인증 라우터 블루프린트
+from flask_migrate import Migrate
 
 # # Flask 확장 모듈 초기화
 # db = SQLAlchemy()
@@ -18,6 +19,7 @@ def create_app():
 
     # 확장 모듈 등록
     db.init_app(app)
+    migrate.init_app(app, db)
     mail.init_app(app)
     login_manager.init_app(app)
 

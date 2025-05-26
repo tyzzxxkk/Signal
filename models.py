@@ -5,9 +5,15 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    love_histories = db.relationship('LoveHistory', backref='user', lazy=True)
 
 class LoveHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_email = db.Column(db.String(120), nullable=False)
-    target_name = db.Column(db.String(50), nullable=False)
-    result = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
+    name1 = db.Column(db.String(64), nullable=False)
+    name2 = db.Column(db.String(64), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    msg = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f"<LoveHistory {self.name1} ❤️ {self.name2} = {self.score}%>"

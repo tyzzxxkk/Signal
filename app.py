@@ -14,11 +14,11 @@ from flask_migrate import Migrate
 # login_manager = LoginManager()
 
 def create_app():
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # 확장 모듈 등록
     db.init_app(app)

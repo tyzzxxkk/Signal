@@ -36,8 +36,8 @@ def love_test():
                               name1=name1,
                               name2=name2,
                               score=score,
-                              result_msg=msg,
-                              date=datetime.datetime.now())
+                              msg=msg,
+                              date=datetime.utcnow())
         db.session.add(history)
         db.session.commit()
     return render_template('love_test.html', result=result)

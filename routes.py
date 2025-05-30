@@ -11,12 +11,16 @@ import datetime
 
 main_bp = Blueprint('main', __name__)
 
-@main_bp.route('/')
+@main_bp.route('/') 
 def home():
     if current_user.is_authenticated:
-        email_name = current_user.email.split('@')[0] 
+        email_name = current_user.email.split('@')[0]
         return render_template('home.html', user_name=email_name)
-    return render_template('index.html')
+    return render_template('index.html') 
+
+@main_bp.route('/guest_home')
+def guest_home():
+    return render_template('guest_home.html')
 
 @main_bp.route('/love_test', methods=['GET', 'POST'])
 @login_required

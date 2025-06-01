@@ -24,18 +24,17 @@ def guest_home():
     return render_template('guest_home.html')
 
 @main_bp.route('/love_test', methods=['GET', 'POST'])
-# @login_required  # 이 줄을 주석 처리하거나 제거합니다.
+# @login_required 
 def love_test():
-    form = LoveForm() # LoveForm 인스턴스를 생성합니다.
+    form = LoveForm() 
     result = None
-    if form.validate_on_submit(): # request.method == 'POST' 대신 form.validate_on_submit() 사용
-        name1 = form.name1.data # 폼에서 데이터 가져오기
-        name2 = form.name2.data # 폼에서 데이터 가져오기
+    if form.validate_on_submit(): 
+        name1 = form.name1.data
+        name2 = form.name2.data 
 
         score, msg = love_result_message(name1, name2)
         result = {'name1': name1, 'name2': name2, 'score': score, 'msg': msg}
 
-        # 로그인된 사용자일 경우에만 LoveHistory에 저장
         if current_user.is_authenticated:
             history = LoveHistory(user_id=current_user.id,
                                   name1=name1,
@@ -48,31 +47,25 @@ def love_test():
         else:
             flash('로그인하시면 궁합 테스트 기록을 저장할 수 있습니다.', 'info')
 
-    return render_template('love_test.html', form=form, result=result) # form을 템플릿으로 전달합니다.
+    return render_template('love_test.html', form=form, result=result) 
 
 
 @main_bp.route('/history')
 @login_required
 def history():
     histories = LoveHistory.query.filter_by(user_id=current_user.id).all()
-    # history.html 템플릿의 변수명 불일치 수정 (history -> histories)
     return render_template('history.html', histories=histories)
 
 
 @main_bp.route('/send_letter', methods=['GET', 'POST'])
 @login_required
 def send_letter():
-    form = LetterForm() # LetterForm을 import 하고 인스턴스 생성
+    form = LetterForm() 
     if form.validate_on_submit():
-        # receiver_email 필드가 폼에 직접 정의되어 있지 않으므로, 임시로 request.form.get 사용
-        # forms.py의 LetterForm에 receiver_email 필드를 추가하거나,
-        # 프론트엔드에서 hidden input 등으로 receiver_email을 전달해야 합니다.
-        # 여기서는 임시로 'receiver_email'이라는 필드명으로 request.form.get을 사용합니다.
-        # 만약 LetterForm에 receiver 필드를 추가한다면 form.receiver.data로 변경해야 합니다.
-        receiver_email = request.form.get('receiver') # forms.py의 LetterForm에 'receiver' 필드 추가를 권장합니다.
+        receiver_email = request.form.get('receiver')
         sender_name = form.name.data
         content = form.content.data
-        subject = "SIGNAL 쪽지" # 기본 제목 설정
+        subject = "SIGNAL에서 온 쪽지" 
 
         if not receiver_email or not sender_name or not content:
             flash('모든 항목을 입력해주세요.', 'warning')
@@ -85,4 +78,4 @@ def send_letter():
         send_letter_mail(receiver_email, subject, sender_name, content)
         flash('편지가 성공적으로 전송되었습니다!', 'success')
         return redirect(url_for('main.home'))
-    return render_template('send_letter.html', form=form) # form을 템플릿으로 전달합니다.
+    return render_template('send_letter.html', form=form) 

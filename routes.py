@@ -8,7 +8,7 @@ from filters import filter_bad_words
 import random
 import string
 import datetime
-from forms import LoveForm # LoveForm을 import 합니다.
+from forms import LoveForm, LetterForm
 
 main_bp = Blueprint('main', __name__)
 

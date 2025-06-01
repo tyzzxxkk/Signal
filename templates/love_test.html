@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <title>SIGNAL | 이름 궁합 테스트</title>
@@ -18,7 +19,10 @@
     body::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
       background-size: cover;
       background-position: center;
@@ -27,11 +31,28 @@
       z-index: -1;
     }
 
+    .back-home-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #e11d48;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.2s;
+      z-index: 10;
+    }
+
+    .back-home-btn:hover {
+      background-color: #be123c;
+    }
+
     .test-container {
       background-color: #ffe1f8bb;
       padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 420px;
       text-align: center;
     }
@@ -57,7 +78,8 @@
       font-size: 14px;
     }
 
-    button, input[type="submit"] { 
+    button,
+    input[type="submit"] {
       width: 100%;
       padding: 12px;
       background-color: #FF6B81;
@@ -70,7 +92,8 @@
       transition: background-color 0.3s;
     }
 
-    button:hover, input[type="submit"]:hover { 
+    button:hover,
+    input[type="submit"]:hover {
       background-color: #ff4d68;
     }
 
@@ -108,6 +131,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="test-container">
     <div class="title">우리 이름은… 몇 점?</div>
@@ -121,13 +145,16 @@
     </form>
 
     {% if result %}
-      <div class="result">
-        <p class="heart">{{ result.name1 }} ❤️ {{ result.name2 }}</p>
-        <p class="score">궁합 점수: {{ result.score }}%</p>
-        <p>{{ result.msg }}</p>
-      </div>
+    <div class="result">
+      <p class="heart">{{ result.name1 }} ❤️ {{ result.name2 }}</p>
+      <p class="score">궁합 점수: {{ result.score }}%</p>
+      <p>{{ result.msg }}</p>
+    </div>
     {% endif %}
   </div>
+
+  <a href="{{ url_for('main.home') }}" class="back-home-btn">홈으로 돌아가기</a>
+
   <script>
     function createHeart() {
       const heart = document.createElement("div");
@@ -148,4 +175,5 @@
     setInterval(createHeart, 300);
   </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +20,10 @@
         body::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
             background-size: cover;
             background-position: center;
@@ -28,30 +32,54 @@
             z-index: -1;
         }
 
+        .back-home-btn {
+            position: absolute;
+            top: 5px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #e11d48;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.2s;
+            z-index: 10;
+            font-size: 16px;
+        }
+
+        .back-home-btn:hover {
+            background-color: #be123c;
+        }
+
         .container {
             width: 600px;
-            margin: 40px auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h2 {
+            background-color: #ffe1f8bb;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
         }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
         form {
             display: flex;
             flex-direction: column;
         }
-        input, textarea {
+
+        input,
+        textarea {
             margin-bottom: 20px;
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 16px;
         }
+
         button {
             padding: 12px;
             background-color: #FF6B81;
@@ -62,9 +90,11 @@
             cursor: pointer;
             transition: 0.2s;
         }
+
         button:hover {
             background-color: #ff4d68;
         }
+
         a {
             display: block;
             text-align: center;
@@ -73,17 +103,35 @@
             text-decoration: none;
             font-size: 14px;
         }
+
+        .falling-heart {
+            position: absolute;
+            top: -20px;
+            color: #ff6b81;
+            font-size: 52px;
+            animation: fall linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>편지 보내기</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
         <form method="POST">
             {{ form.hidden_tag() }}
@@ -93,7 +141,29 @@
             {{ form.anonymous() }} 익명으로 보내기
             <button type="submit">보내기</button>
         </form>
-        <a href="{{ url_for('main.home') }}">홈으로 돌아가기</a>
     </div>
+
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">홈으로 돌아가기</a>
+
+    <script>
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("falling-heart");
+            heart.innerText = "🩷";
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        setInterval(createHeart, 300);
+    </script>
 </body>
+
 </html>

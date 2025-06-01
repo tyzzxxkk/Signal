@@ -57,11 +57,11 @@
       font-size: 14px;
     }
 
-    button {
+    button, input[type="submit"] { 
       width: 100%;
       padding: 12px;
       background-color: #FF6B81;
-      color: #fff;
+      color: white;
       border: none;
       border-radius: 10px;
       font-size: 16px;
@@ -70,7 +70,7 @@
       transition: background-color 0.3s;
     }
 
-    button:hover {
+    button:hover, input[type="submit"]:hover { 
       background-color: #ff4d68;
     }
 
@@ -112,11 +112,12 @@
   <div class="test-container">
     <div class="title">우리 이름은… 몇 점?</div>
     <form method="post">
+      {{ form.hidden_tag() }}
       <div class="name-inputs">
-        <input type="text" name="name1" placeholder="이름 1">
-        <input type="text" name="name2" placeholder="이름 2">
+        {{ form.name1(placeholder="이름 1") }}
+        {{ form.name2(placeholder="이름 2") }}
       </div>
-      <button type="submit">테스트하기</button>
+      {{ form.submit() }}
     </form>
 
     {% if result %}

@@ -68,32 +68,33 @@
     </style>
 </head>
 <body>
-    <header>SIGNEL</header>
+    <header>SIGNAL</header>
     <div class="container">
         <h2>나의 테스트 기록</h2>
 
-        {% if history %}
+        {% if histories %} {# history -> histories #}
         <table>
             <tr>
-                <th>상대방 이름</th>
-                <th>상대방 학번</th>
-                <th>결과</th>
+                <th>이름 1</th>
+                <th>이름 2</th>
+                <th>점수</th>
+                <th>메시지</th>
                 <th>테스트 날짜</th>
             </tr>
-            {% for item in history %}
+            {% for item in histories %} {# history -> histories #}
             <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.student_id }}</td>
-                <td>{{ item.result }}</td>
-                <td>{{ item.date }}</td>
+                <td>{{ item.name1 }}</td>
+                <td>{{ item.name2 }}</td>
+                <td>{{ item.score }}%</td>
+                <td>{{ item.msg }}</td>
+                <td>{{ item.date.strftime('%Y-%m-%d %H:%M') }}</td>
             </tr>
             {% endfor %}
         </table>
         {% else %}
-        <p style="text-align:center; color:gray;">아직 테스트 기록이 없습니다.</p>
+        <p style="text-align: center;">아직 궁합 테스트 기록이 없습니다.</p>
         {% endif %}
-
-        <a href="/">메인으로 돌아가기</a>
+        <a href="{{ url_for('main.home') }}">홈으로 돌아가기</a>
     </div>
 </body>
 </html>

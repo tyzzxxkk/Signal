@@ -35,10 +35,9 @@
         .back-home-btn {
             position: absolute;
             top: 5px;
-            right: 20px;
+            left: 20px;
             padding: 10px 20px;
-            background-color: #e11d48;
-            color: white;
+            color: #e11d48;
             border-radius: 8px;
             text-decoration: none;
             transition: 0.2s;
@@ -47,7 +46,7 @@
         }
 
         .back-home-btn:hover {
-            background-color: #be123c;
+            color: #be123c;
         }
 
         .container {
@@ -143,7 +142,7 @@
         </form>
     </div>
 
-    <a href="{{ url_for('main.home') }}" class="back-home-btn">홈으로 돌아가기</a>
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">< 홈으로 돌아가기</a>
 
     <script>
         function createHeart() {

@@ -31,7 +31,7 @@
       z-index: -1;
     }
 
-    .logout-btn {
+    .login-btn {
       position: absolute;
       top: 20px;
       right: 20px;
@@ -44,7 +44,7 @@
       z-index: 10;
     }
 
-    .logout-btn:hover {
+    .login-btn:hover {
       background-color: #be123c;
     }
 
@@ -54,7 +54,7 @@
     }
 
     h1 {
-      margin-top: 25%;
+      margin-top: 15%;
       font-size: 52px;
       color: #333;
       margin-bottom: 10px;
@@ -86,7 +86,10 @@
       margin-top: 20px;
       font-size: 14px;
       color: #444;
-      text-decoration: none;
+    }
+
+    .history-link:hover {
+      text-decoration: underline;
     }
 
     .falling-heart {
@@ -108,18 +111,16 @@
   </style>
 </head>
 <body>
-  <a href="/logout" class="logout-btn">로그아웃</a>
+  <a href="/logout" class="login-btn">로그인하기</a>
 
   <div class="main-content">
     <h1>SIGNAL</h1>
-    <p>{{ user_name }}님! SIGNAL과 함께 두근두근하게 💕</p>
+    <p>SIGNAL에 로그인 하고 더 많은 기능을 즐겨보세요! 💕</p>
 
     <div>
       <a href="/love_test" class="btn">궁합 테스트</a>
       <a href="/send_letter" class="btn">쪽지 보내기</a>
     </div>
-
-    <a href="/history" class="history-link">히스토리 보기</a>
   </div>
 
   <script>

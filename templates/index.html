@@ -1,34 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <title>SIGNEL | 시작</title>
+    <title>SIGNAL | 시작</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #F8F9FA;
+            position: relative;
             font-family: "Pretendard";
-            color: #343A40;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+
         }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            filter: blur(16px);
+            z-index: -1;
+        }
+
         .container {
             text-align: center;
         }
+
         h1 {
             font-size: 48px;
             margin-bottom: 20px;
         }
+
         p {
             font-size: 18px;
-            color: #6C757D;
+            color: #493e4a;
         }
-        a {
+
+        .login {
             display: inline-block;
-            margin-top: 30px;
+            margin-top: 20px;
             padding: 10px 30px;
             background-color: #FF6B81;
             color: #fff;
@@ -36,24 +56,28 @@
             border-radius: 8px;
             transition: background-color 0.3s;
         }
-        a:hover {
+
+        .login:hover {
             background-color: #ff4d68;
         }
+
         .guest {
             display: block;
-            margin-top: 15px;
+            margin-top: 40px;
             font-size: 14px;
-            color: #6C757D;
+            color: #493e4a;
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>SIGNEL</h1>
-        <p>운명적인 만남을 위한 궁합 테스트 서비스</p>
-        <a href="/login">로그인 하기</a>
-        <a href="/home" class="guest">비로그인으로 둘러보기</a>
+        <p>운명적인 만남을 위해서</p>
+        <h1>SIGNAL</h1>
+        <a href="{{ url_for('auth.login') }}" class="login">로그인하기</a>
+        <a href="{{ url_for('main.guest_home') }}" class="guest">계정이 없다면? 비로그인 상태로 둘러보기</a>
     </div>
 </body>
+
 </html>

@@ -9,7 +9,7 @@ class LoginForm(FlaskForm):
         Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$', message='미림 이메일만 가능')
     ])
     password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+    submit = SubmitField('로그인')
 
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[
@@ -19,9 +19,14 @@ class RegisterForm(FlaskForm):
     ])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+    submit = SubmitField('가입하기')
 
 class LetterForm(FlaskForm):
+    receiver_email = StringField('받는 사람 이메일', validators=[
+        DataRequired(),
+        Email(),
+        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\\\.hs\\\\.kr$', message='미림 이메일만 가능')
+    ])
     anonymous = BooleanField('익명 여부')
     name = StringField('보내는 사람(학번 이름)', validators=[DataRequired()])
     content = TextAreaField('내용', validators=[DataRequired()])

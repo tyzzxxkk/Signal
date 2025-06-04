@@ -2,39 +2,57 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>SIGNEL | 로그인</title>
+    <title>SIGNAL | 로그인</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #F8F9FA;
+            position: relative;
             font-family: "Pretendard";
-            color: #343A40;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            filter: blur(16px);
+            z-index: -1;
+        }
+
         .login-container {
-            background-color: #fff;
+            background-color: #ffe1f8bb;
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
             width: 400px;
         }
+
         h2 {
             font-size: 32px;
             margin-bottom: 20px;
         }
+
         input {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
+            width: 95.5%;
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
+            margin-top: 10px;
         }
+
         button {
             width: 100%;
             padding: 12px;
@@ -47,29 +65,48 @@
             margin-top: 15px;
             transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #ff4d68;
         }
+
         .register {
-            margin-top: 20px;
+            margin-top: 30px;
             font-size: 14px;
         }
+
         .register a {
             color: #FF6B81;
             text-decoration: underline;
+        }
+
+        .flash {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>로그인</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
         <form method="post">
-            <input type="text" name="email" placeholder="이메일을 입력하세요" required>
-            <input type="password" name="password" placeholder="비밀번호를 입력하세요" required>
-            <button type="submit">로그인</button>
+            {{ form.hidden_tag() }}
+            {{ form.email(class="form-input", placeholder="이메일을 입력하세요") }}
+            {{ form.password(class="form-input", placeholder="비밀번호를 입력하세요") }}
+            
+            <button type="submit" name="submit" class="login-button">로그인</button>
+        </form>
         </form>
         <div class="register">
-            계정이 없으신가요? <a href="/register">회원가입</a>
+            계정이 없으신가요? <a href="{{ url_for('auth.register') }}">회원가입</a>
         </div>
     </div>
 </body>

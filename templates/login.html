@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <title>SIGNAL | 로그인</title>
@@ -34,7 +35,7 @@
             background-color: #ffe1f8bb;
             padding: 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 400px;
         }
@@ -87,27 +88,41 @@
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <h2>로그인</h2>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="flash">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
+
+        {% if form.email.errors %}
+        {% for error in form.email.errors %}
+        <div class="flash">{{ error }}</div>
+        {% endfor %}
+        {% endif %}
+        {% if form.password.errors %}
+        {% for error in form.password.errors %}
+        <div class="flash">{{ error }}</div>
+        {% endfor %}
+        {% endif %}
+
         <form method="post">
             {{ form.hidden_tag() }}
             {{ form.email(class="form-input", placeholder="이메일을 입력하세요") }}
             {{ form.password(class="form-input", placeholder="비밀번호를 입력하세요") }}
-            
+
             <button type="submit" name="submit" class="login-button">로그인</button>
         </form>
-        </form>
         <div class="register">
-            계정이 없으신가요? <a href="{{ url_for('auth.register') }}">회원가입</a>
+            회원이 아니신가요? <a href="{{ url_for('auth.register') }}">회원가입</a>
         </div>
     </div>
 </body>
+
 </html>

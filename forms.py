@@ -6,7 +6,7 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[
         DataRequired(),
         Email(),
-        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다')
+        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다.')
     ])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('로그인')
@@ -15,17 +15,17 @@ class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[
         DataRequired(),
         Email(),
-        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다')
+        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다.')
     ])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='비밀번호가 일치하지 않습니다.')])
     submit = SubmitField('가입하기')
 
 class LetterForm(FlaskForm):
     receiver_email = StringField('받는 사람 이메일', validators=[
         DataRequired(),
         Email(),
-        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\\\.hs\\\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다')
+        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\\\.hs\\\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다.')
     ])
     anonymous = BooleanField('익명 여부')
     name = StringField('보내는 사람(학번 이름)', validators=[DataRequired()])

@@ -103,3 +103,26 @@ def send_letter():
             return render_template('send_letter.html', form=form)
             
     return render_template('send_letter.html', form=form)
+
+@main_bp.route('/search_user_email', methods=['GET'])
+@login_required # 로그인된 사용자만 검색 가능하도록
+def search_user_email():
+    query = request.args.get('query', '').strip()
+    if not query:
+        return jsonify([])
+
+    # 쿼리가 '@'를 포함하면 이메일로 검색, 아니면 이름으로 검색
+    if '@' in query:
+        # 이메일 전체 또는 부분 일치 검색
+        users = User.query.filter(User.email.ilike(f'%{query}%')).limit(10).all()
+    else:
+        # 이름으로 검색 (대소문자 구분 없음)
+        users = User.query.filter(User.name.ilike(f'%{query}%')).limit(10).all()
+
+    results = []
+    for user in users:
+        # 이름 필드가 없거나 비어있을 경우 이메일의 로컬 파트 사용 (예: "test@e-mirim.hs.kr" -> "test")
+        display_name = user.name if user.name else user.email.split('@')[0]
+        results.append({'email': user.email, 'name': display_name})
+    
+    return jsonify(results)

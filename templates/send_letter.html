@@ -162,6 +162,50 @@
         }
 
         setInterval(createHeart, 300);
+
+        const receiverEmailInput = document.getElementById('receiver_email_input');
+        const emailSuggestionsDiv = document.getElementById('email_suggestions');
+        let debounceTimer;
+
+        receiverEmailInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const query = this.value.trim();
+                if (query.length > 1) { // 최소 2글자 이상 입력 시 검색
+                    fetch(`/search_user_email?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            emailSuggestionsDiv.innerHTML = ''; // 기존 목록 초기화
+                            if (data.length > 0) {
+                                data.forEach(item => {
+                                    const div = document.createElement('div');
+                                    // 이름과 이메일을 함께 표시하되, 이메일은 '<이메일>' 형식으로
+                                    div.textContent = `${item.name} <${item.email}>`;
+                                    div.addEventListener('click', () => {
+                                        // 클릭 시 이메일만 입력 필드에 채움
+                                        receiverEmailInput.value = item.email;
+                                        emailSuggestionsDiv.style.display = 'none'; // 목록 숨기기
+                                    });
+                                    emailSuggestionsDiv.appendChild(div);
+                                });
+                                emailSuggestionsDiv.style.display = 'block'; // 추천 목록 표시
+                            } else {
+                                emailSuggestionsDiv.style.display = 'none'; // 결과 없으면 숨김
+                            }
+                        })
+                        .catch(error => console.error('Error searching users:', error));
+                } else {
+                    emailSuggestionsDiv.style.display = 'none'; // 쿼리 길이가 짧으면 숨김
+                }
+            }, 300); // 300ms 디바운스
+        });
+
+        // 입력 필드 외부 클릭 시 추천 목록 숨기기
+        document.addEventListener('click', function(event) {
+            if (!receiverEmailInput.contains(event.target) && !emailSuggestionsDiv.contains(event.target)) {
+                emailSuggestionsDiv.style.display = 'none';
+            }
+        });
     </script>
 </body>
 

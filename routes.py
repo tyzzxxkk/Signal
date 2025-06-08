@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app # current_app 추가
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify 
 from flask_login import login_required, current_user
-from models import LoveHistory
+from models import LoveHistory, User, Letter 
 from extensions import db
 from love_test import love_result_message
 from mail_sender import send_letter_mail
@@ -15,9 +15,11 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def home():
     if current_user.is_authenticated:
-        email_name = current_user.email.split('@')[0]
-        return render_template('home.html', user_name=email_name)
-    return render_template('index.html')
+        user_name = current_user.email.split('@')[0]
+        if hasattr(current_user, 'name') and current_user.name: 
+            user_name = current_user.name 
+        return render_template('home.html', user_name=user_name)
+    return render_template('index.html') 
 
 @main_bp.route('/guest_home')
 def guest_home():
@@ -62,7 +64,6 @@ def delete_history(history_id):
     # flash('기록이 성공적으로 삭제되었습니다.', 'success')  
     return redirect(url_for('main.history'))
 
-
 @main_bp.route('/send_letter', methods=['GET', 'POST'])
 @login_required
 def send_letter():
@@ -71,24 +72,34 @@ def send_letter():
         receiver_email = form.receiver_email.data
         sender_name = form.name.data
         content = form.content.data
-        anonymous = form.anonymous.data
+        is_anonymous = form.anonymous.data 
 
-        if anonymous:
+        receiver_user = User.query.filter_by(email=receiver_email).first()
+        if not receiver_user:
+            flash('존재하지 않는 사용자 이메일이거나, 유효하지 않은 이메일 형식입니다.', 'danger')
+            return render_template('send_letter.html', form=form)
+
+        if is_anonymous: 
             sender_name = "익명"
 
-        subject = "SIGNAL로부터 온 편지"
+        filtered_content = filter_bad_words(content) 
 
-        if not receiver_email.endswith('@e-mirim.hs.kr'):
-            flash('학교 이메일만 입력 가능합니다.', 'danger')
-            return redirect(url_for('main.send_letter'))
-
+        new_letter = Letter(
+            sender_id=current_user.id,
+            receiver_email=receiver_email,
+            sender_name=sender_name,
+            content=filtered_content,
+            is_anonymous=is_anonymous
+        )
+        db.session.add(new_letter)
+        db.session.commit()
         try:
-            send_letter_mail(receiver_email, subject, sender_name, content)
+            send_letter_mail(receiver_email, "SIGNAL로부터 온 편지", sender_name, filtered_content)
             flash('편지가 성공적으로 전송되었습니다!', 'success')
             return redirect(url_for('main.home'))
         except Exception as e:
-            flash(f'편지 전송에 실패했습니다: {e}', 'danger')
-            current_app.logger.error(f"Error sending email: {e}")
-            return redirect(url_for('main.send_letter'))
-
+            flash(f'메일 발송에 실패했습니다: {e}', 'danger')
+            db.session.rollback() 
+            return render_template('send_letter.html', form=form)
+            
     return render_template('send_letter.html', form=form)

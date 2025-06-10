@@ -153,25 +153,18 @@
 
     <div class="container">
         <h2>받은 편지함</h2>
-
         {% if letters %}
         <ul class="letter-list">
             {% for letter in letters %}
             <li class="letter-item" onclick="toggleContent(this)">
                 <div class="letter-header">
-                    <span class="letter-sender">
-                        {% if letter.is_anonymous %}
-                            익명
-                        {% else %}
-                            {{ letter.sender_name }}
-                        {% endif %}
-                    </span>
-                    <span class="letter-timestamp">{{ letter.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                    <span class="sender-name">{{ letter.sender_name }}</span>
+                    <span class="timestamp">{{ letter.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
                 </div>
                 <div class="letter-preview">
                     {{ letter.content[:20] }}...
                 </div>
-                <div class="letter-full-content">
+                <div class="letter-full-content" style="display: none;">
                     {{ letter.content }}
                 </div>
             </li>

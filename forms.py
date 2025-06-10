@@ -12,6 +12,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('로그인')
 
 class RegisterForm(FlaskForm):
+    name = StringField('이름', validators=[DataRequired()])
     email = StringField('Email', validators=[
         DataRequired(),
         Email(),

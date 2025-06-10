@@ -41,7 +41,7 @@ def register():
             flash('비밀번호가 일치하지 않습니다.', 'danger')
         else:
             hashed_pw = generate_password_hash(form.password.data)
-            new_user = User(email=form.email.data, password=hashed_pw)
+            new_user = User(email=form.email.data, password=hashed_pw, name=form.name.data)
             db.session.add(new_user)
             db.session.commit()
             flash('회원가입 성공! 로그인 해주세요.', 'success')

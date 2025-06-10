@@ -115,9 +115,15 @@
         <div class="flash">{{ error }}</div>
         {% endfor %}
         {% endif %}
+        {% if form.name.errors %} 
+        {% for error in form.name.errors %} 
+        <div class="flash">{{ error }}</div> 
+        {% endfor %}
+        {% endif %} 
 
         <form method="post">
             {{ form.hidden_tag() }}
+            {{ form.name(class="form-input", placeholder="학번과 이름을 입력하세요 (예시: 1101가나디)") }}
             {{ form.email(class="form-input", placeholder="이메일을 입력하세요") }}
             {{ form.password(class="form-input", placeholder="비밀번호를 입력하세요") }}
             {{ form.confirm(class="form-input", placeholder="비밀번호 확인") }}

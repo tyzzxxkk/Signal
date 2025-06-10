@@ -4,6 +4,7 @@ from models import LoveHistory, User, Letter
 from extensions import db
 from love_test import love_result_message
 import datetime
+from filters import filter_bad_words
 from forms import LoveForm, LetterForm
 
 main_bp = Blueprint('main', __name__)
@@ -64,34 +65,35 @@ def delete_history(history_id):
 @login_required
 def send_letter():
     form = LetterForm()
+    content = form.content.data
     if form.validate_on_submit():
         receiver_email = form.receiver_email.data
         content = form.content.data
         is_anonymous = form.anonymous.data
 
-        logged_in_user_name = current_user.name
-        sender_display_name = '익명' if is_anonymous else logged_in_user_name 
-        
-        # 수신자가 존재하는지 확인
         receiver_user = User.query.filter_by(email=receiver_email).first()
+
         if not receiver_user:
-            flash('존재하지 않는 사용자 이메일입니다.', 'danger')
+            flash(f'수신자 이메일 ({receiver_email})을 가진 사용자가 존재하지 않습니다.', 'danger')
             return render_template('send_letter.html', form=form)
 
-        new_letter = Letter(
-            sender_id=current_user.id,
-            receiver_email=receiver_email,
-            sender_name=sender_display_name, 
-            content=content,
-            is_anonymous=is_anonymous 
-        )
-        db.session.add(new_letter)
+        # 익명 여부에 따라 보내는 사람 이름 설정
+        sender_name = '익명' if is_anonymous else current_user.name
 
         try:
-            db.session.commit() # 편지 저장 커밋
+            filtered_content = filter_bad_words(content)
 
-            # flash('쪽지가 성공적으로 발송되었습니다!', 'success') # 성공 메시지는 그대로
-            flash(f'{receiver_email}님에게 쪽지가 성공적으로 전송되었습니다!', 'success') 
+            new_letter = Letter(
+                sender_id=current_user.id,
+                receiver_email=receiver_email,
+                sender_name=sender_name,
+                content=filtered_content,
+                is_anonymous=is_anonymous
+            )
+
+            db.session.add(new_letter)
+            db.session.commit()
+            flash('쪽지가 성공적으로 발송되었습니다!', 'success')
             return redirect(url_for('main.home'))
         except Exception as e: # DB 저장 등 다른 일반적인 오류 처리
             current_app.logger.error(f"Error saving letter to DB or unexpected error: {e}")
@@ -120,13 +122,14 @@ def search_user_email():
     for user in users:
         # 이름 필드가 없거나 비어있을 경우 이메일의 로컬 파트 사용 (예: "test@e-mirim.hs.kr" -> "test")
         display_name = user.name if user.name else user.email.split('@')[0]
-        results.append({'email': user.email, 'name': display_name})
+        results.append({'email': user.email, 'display_name': display_name})
 
     return jsonify(results)
 
 @main_bp.route('/letter')
 @login_required
 def letter_inbox():
-    user_email = current_user.email
-    received_letters = Letter.query.filter_by(receiver_email=user_email).order_by(Letter.timestamp.desc()).all()
+    received_letters = Letter.query.filter_by(receiver_email=current_user.email)\
+                                   .order_by(Letter.timestamp.desc())\
+                                   .all()
     return render_template('letter.html', letters=received_letters)

@@ -216,7 +216,7 @@
 
         setInterval(createHeart, 300);
 
-        // 이메일 검색 및 자동 완성 JavaScript 시작
+        // 이메일 검색 및 자동 완성
         const receiverEmailInput = document.getElementById('receiver_email_input');
         const emailSuggestionsDiv = document.getElementById('email_suggestions');
         let debounceTimer;
@@ -225,7 +225,7 @@
             clearTimeout(debounceTimer);
             const query = this.value.trim();
 
-            if (query.length === 0) { // 입력 내용이 없으면 추천 목록 숨기기
+            if (query.length === 0) {
                 emailSuggestionsDiv.innerHTML = '';
                 emailSuggestionsDiv.style.display = 'none';
                 return;
@@ -245,15 +245,15 @@
                                     const display_name = item.name ? item.name : item.email.split('@')[0];
                                     div.textContent = `${display_name} <${item.email}>`;
                                     div.addEventListener('click', () => {
-                                        // 클릭 시 이메일만 입력 필드에 채움
-                                        receiverEmailInput.value = item.email;
+                                        // 클릭 시 이메일만 입력 필드에 채움 => 이름으로 변경
+                                        receiverEmailInput.value = item.display_name;
                                         emailSuggestionsDiv.style.display = 'none'; // 목록 숨기기
                                     });
                                     emailSuggestionsDiv.appendChild(div);
                                 });
                                 emailSuggestionsDiv.style.display = 'block'; // 추천 목록 표시
                             } else {
-                                emailSuggestionsDiv.style.display = 'none'; // 결과 없으면 숨김
+                                emailSuggestionsDiv.style.display = 'none'; 
                             }
                         })
                         .catch(error => {
@@ -264,7 +264,7 @@
                 } else {
                     emailSuggestionsDiv.style.display = 'none'; // 쿼리 길이가 짧으면 숨김
                 }
-            }, 300); // 300ms 디바운스
+            }, 300); 
         });
 
         // 입력 필드 외부 클릭 시 추천 목록 숨기기
@@ -273,7 +273,6 @@
                 emailSuggestionsDiv.style.display = 'none';
             }
         });
-        // 이메일 검색 및 자동 완성 JavaScript 끝
     </script>
 </body>
 

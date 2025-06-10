@@ -185,11 +185,8 @@
         {% endwith %}
         <form method="POST">
             {{ form.hidden_tag() }}
-            {# 받는 사람 이메일 필드에 id 추가 #}
             {{ form.receiver_email(id="receiver_email_input", placeholder="받는 사람 이름 또는 이메일") }}
-            <div id="email_suggestions" class="suggestions" style="display: none;"></div> {# 추천 목록을 위한 div #}
-            
-            {{ form.name(placeholder="보내는 사람 (익명 시 '익명')") }}
+            <div id="email_suggestions" class="suggestions" style="display: none;"></div>
             {{ form.content(placeholder="내용을 입력하세요") }}
             <div style="text-align: left; margin-top: 10px; margin-bottom: 20px;">
                 {{ form.anonymous() }} 익명으로 보내기

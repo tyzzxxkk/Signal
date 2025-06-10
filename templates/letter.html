@@ -14,7 +14,7 @@
             align-items: center;
             height: 100vh;
             position: relative;
-            overflow: hidden; /* Prevent scrollbar from falling hearts */
+            overflow: hidden; 
         }
 
         body::before {
@@ -37,10 +37,10 @@
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 80%; /* Adjusted width for letter list */
+            width: 80%; 
             max-width: 600px;
-            max-height: 80vh; /* Limit height */
-            overflow-y: auto; /* Enable scrolling for letter list */
+            max-height: 80vh; 
+            overflow-y: auto; 
             position: relative;
             z-index: 10;
         }
@@ -72,7 +72,7 @@
             text-align: left;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease-in-out;
-            cursor: pointer; /* Indicate clickable */
+            cursor: pointer; 
         }
 
         .letter-item:hover {
@@ -102,7 +102,7 @@
             color: #666;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* ... for long text */
+            text-overflow: ellipsis; 
         }
 
         .letter-full-content {
@@ -110,7 +110,7 @@
             color: #333;
             margin-top: 10px;
             line-height: 1.6;
-            display: none; /* Hidden by default */
+            display: none; 
         }
 
         .back-home-btn {
@@ -124,15 +124,12 @@
             transition: 0.2s;
             z-index: 10;
             font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.7);
         }
 
         .back-home-btn:hover {
             color: #be123c;
-            background-color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Falling Hearts Animation */
         .falling-heart {
             position: absolute;
             top: -20px;
@@ -186,7 +183,6 @@
     </div>
 
     <script>
-        // Function to toggle full content visibility
         function toggleContent(element) {
             const preview = element.querySelector('.letter-preview');
             const fullContent = element.querySelector('.letter-full-content');
@@ -200,7 +196,6 @@
             }
         }
 
-        // Falling Hearts Animation
         function createHeart() {
             const heart = document.createElement("div");
             heart.classList.add("falling-heart");

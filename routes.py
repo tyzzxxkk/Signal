@@ -142,3 +142,10 @@ def search_user_email():
         results.append({'email': user.email, 'name': display_name})
 
     return jsonify(results)
+
+@main_bp.route('/letter')
+@login_required
+def letter_inbox():
+    user_email = current_user.email
+    received_letters = Letter.query.filter_by(receiver_email=user_email).order_by(Letter.timestamp.desc()).all()
+    return render_template('letter.html', letters=received_letters)

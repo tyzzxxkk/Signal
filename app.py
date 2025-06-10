@@ -4,11 +4,10 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from config import Config
 from extensions import db, mail, login_manager, migrate
-from routes import main_bp  # 메인 라우터 블루프린트
-from auth import auth_bp   # 인증 라우터 블루프린트
+from routes import main_bp  
+from auth import auth_bp   
 from flask_migrate import Migrate
 
-# # Flask 확장 모듈 초기화
 # db = SQLAlchemy()
 # mail = Mail()
 # login_manager = LoginManager()
@@ -30,7 +29,7 @@ def create_app():
     login_manager.login_view = 'auth.login'
 
     # 로그인 유저 로드 함수
-    from models import User, LoveHistory  # 모델 import
+    from models import User, LoveHistory 
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -58,3 +57,11 @@ app = create_app()
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
+
+@main_bp.route('/letter')
+
+@login_required
+def letter_inbox():
+    user_email = current_user.email
+    received_letters = Letter.query.filter_by(receiver_email=user_email).order_by(Letter.timestamp.desc()).all()
+    return render_template('letter.html', letters=received_letters)

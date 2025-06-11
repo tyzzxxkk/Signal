@@ -243,7 +243,7 @@
                                     // 이름과 이메일을 함께 표시 (예: 홍길동 <hong.gildong@e-mirim.hs.kr>)
                                     // 이름이 없을 경우 이메일의 로컬 파트만 표시
                                     const display_name = item.name ? item.name : item.email.split('@')[0];
-                                    div.textContent = `${display_name} <${item.email}>`;
+                                    div.textContent = `${item.display_name} <${item.email}>`;
                                     div.addEventListener('click', () => {
                                         // 클릭 시 이메일만 입력 필드에 채움 => 이름으로 변경
                                         receiverEmailInput.value = item.display_name;

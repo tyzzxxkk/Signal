@@ -49,7 +49,38 @@ def love_test():
 @login_required
 def history():
     histories = LoveHistory.query.filter_by(user_id=current_user.id).order_by(LoveHistory.date.desc()).all()
-    return render_template('history.html', histories=histories)
+    sent_letters = Letter.query.filter_by(sender_id=current_user.id).all()
+
+    all_activities = []
+
+    for h in histories:
+        all_activities.append({
+            'type': 'love_test',
+            'id': h.id,
+            'timestamp': h.date,
+            'name1': h.name1,
+            'name2': h.name2,
+            'score': h.score,
+            'msg': h.msg,
+            'display_text': f"'{h.name1}'와 '{h.name2}' 궁합 {h.score}%"
+        })
+
+    for l in sent_letters:
+        all_activities.append({
+            'type': 'sent_letter',
+            'id': l.id, 
+            'timestamp': l.timestamp,
+            'sender_name': l.sender_name, 
+            'receiver_email': l.receiver_email, 
+            'content': l.content,
+            'is_anonymous': l.is_anonymous,
+            'display_text': f"쪽지 발송: {l.receiver_email}에게 '{l.content[:15]}...' (익명: {l.is_anonymous})"
+        })
+
+    # 모든 활동을 최신순으로 정렬
+    all_activities.sort(key=lambda x: x['timestamp'], reverse=True)
+
+    return render_template('history.html', activities=all_activities)
 
 @main_bp.route('/delete_history/<int:history_id>', methods=['POST'])
 @login_required

@@ -1,13 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import login_required, current_user
-from models import LoveHistory, User, Letter 
+from models import LoveHistory, User, Letter
 from extensions import db
 from love_test import love_result_message
-from mail_sender import send_letter_mail
-from filters import filter_bad_words
 import datetime
+from filters import filter_bad_words
 from forms import LoveForm, LetterForm
-from smtplib import SMTPException 
 
 main_bp = Blueprint('main', __name__)
 
@@ -51,7 +49,38 @@ def love_test():
 @login_required
 def history():
     histories = LoveHistory.query.filter_by(user_id=current_user.id).order_by(LoveHistory.date.desc()).all()
-    return render_template('history.html', histories=histories)
+    sent_letters = Letter.query.filter_by(sender_id=current_user.id).all()
+
+    all_activities = []
+
+    for h in histories:
+        all_activities.append({
+            'type': 'love_test',
+            'id': h.id,
+            'timestamp': h.date,
+            'name1': h.name1,
+            'name2': h.name2,
+            'score': h.score,
+            'msg': h.msg,
+            'display_text': f"'{h.name1}'와 '{h.name2}' 궁합 {h.score}%"
+        })
+
+    for l in sent_letters:
+        all_activities.append({
+            'type': 'sent_letter',
+            'id': l.id, 
+            'timestamp': l.timestamp,
+            'sender_name': l.sender_name, 
+            'receiver_email': l.receiver_email, 
+            'content': l.content,
+            'is_anonymous': l.is_anonymous,
+            'display_text': f"쪽지 발송: {l.receiver_email}에게 '{l.content[:15]}...' (익명: {l.is_anonymous})"
+        })
+
+    # 모든 활동을 최신순으로 정렬
+    all_activities.sort(key=lambda x: x['timestamp'], reverse=True)
+
+    return render_template('history.html', activities=all_activities)
 
 @main_bp.route('/delete_history/<int:history_id>', methods=['POST'])
 @login_required
@@ -67,57 +96,42 @@ def delete_history(history_id):
 @login_required
 def send_letter():
     form = LetterForm()
+    content = form.content.data
     if form.validate_on_submit():
         receiver_email = form.receiver_email.data
-        sender_name = form.name.data
         content = form.content.data
-        is_anonymous = form.anonymous.data 
+        is_anonymous = form.anonymous.data
 
-        # 1. @e-mirim.hs.kr 도메인 검사 먼저 수행 
-        if not receiver_email.endswith('@e-mirim.hs.kr'):
-            flash('학교 이메일만 입력 가능합니다.', 'danger')
-            return render_template('send_letter.html', form=form) 
-
-        # 2. 받는 사람 이메일로 User 검색 
         receiver_user = User.query.filter_by(email=receiver_email).first()
+
         if not receiver_user:
-            flash('존재하지 않는 사용자 이메일이거나, 유효하지 않은 이메일 형식입니다.', 'danger')
-            return render_template('send_letter.html', form=form) # 사용자 없으면 폼 유지
+            flash(f'수신자 이메일 ({receiver_email})을 가진 사용자가 존재하지 않습니다.', 'danger')
+            return render_template('send_letter.html', form=form)
 
         # 익명 여부에 따라 보내는 사람 이름 설정
-        if is_anonymous:
-            sender_name = "익명"
-
-        # 욕설 필터링
-        filtered_content = filter_bad_words(content)
-
-        # Letter 모델에 편지 저장
-        new_letter = Letter(
-            sender_id=current_user.id, # 로그인된 사용자 ID를 sender_id로 저장
-            receiver_email=receiver_email,
-            sender_name=sender_name,
-            content=filtered_content,
-            is_anonymous=is_anonymous # 익명 여부 저장
-        )
-        db.session.add(new_letter)
+        sender_name = '익명' if is_anonymous else current_user.name
 
         try:
-            db.session.commit() # 편지 저장 먼저 커밋
-            send_letter_mail(receiver_email, "SIGNAL로부터 온 편지", sender_name, filtered_content)
-            flash('편지가 성공적으로 전송되었습니다!', 'success')
-            return redirect(url_for('main.home'))
-        except SMTPException as e: # 메일 서버 관련 구체적인 예외 처리
-            current_app.logger.error(f"SMTP Error sending email to {receiver_email}: {e}")
-            flash(f'메일 발송에 실패했습니다. (메일 서버 오류: {e})', 'danger')
-            db.session.rollback() # 오류 발생 시 DB 변경사항 롤백
-            return render_template('send_letter.html', form=form) # 오류 발생 시 폼 유지
-        except Exception as e: # 그 외 모든 예외 처리
-            current_app.logger.error(f"Unexpected error sending email to {receiver_email}: {e}")
-            flash(f'메일 발송 중 알 수 없는 오류가 발생했습니다: {e}', 'danger')
-            db.session.rollback() # 오류 발생 시 DB 변경사항 롤백
-            return render_template('send_letter.html', form=form) # 오류 발생 시 폼 유지
+            filtered_content = filter_bad_words(content)
 
-    # GET 요청 시 또는 폼 유효성 검사 실패 시 (post 요청에서 유효성 검사 통과 못했을 때)
+            new_letter = Letter(
+                sender_id=current_user.id,
+                receiver_email=receiver_email,
+                sender_name=sender_name,
+                content=filtered_content,
+                is_anonymous=is_anonymous
+            )
+
+            db.session.add(new_letter)
+            db.session.commit()
+            flash('쪽지가 성공적으로 발송되었습니다!', 'success')
+            return redirect(url_for('main.home'))
+        except Exception as e: # DB 저장 등 다른 일반적인 오류 처리
+            current_app.logger.error(f"Error saving letter to DB or unexpected error: {e}")
+            flash(f'쪽지 발송 중 오류가 발생했습니다: {e}', 'danger')
+            db.session.rollback() # 오류 발생 시 DB 변경사항 롤백
+            return render_template('send_letter.html', form=form)
+
     return render_template('send_letter.html', form=form)
 
 @main_bp.route('/search_user_email', methods=['GET'])
@@ -139,6 +153,14 @@ def search_user_email():
     for user in users:
         # 이름 필드가 없거나 비어있을 경우 이메일의 로컬 파트 사용 (예: "test@e-mirim.hs.kr" -> "test")
         display_name = user.name if user.name else user.email.split('@')[0]
-        results.append({'email': user.email, 'name': display_name})
+        results.append({'email': user.email, 'display_name': display_name})
 
     return jsonify(results)
+
+@main_bp.route('/letter')
+@login_required
+def letter_inbox():
+    received_letters = Letter.query.filter_by(receiver_email=current_user.email)\
+                                   .order_by(Letter.timestamp.desc())\
+                                   .all()
+    return render_template('letter.html', letters=received_letters)

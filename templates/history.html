@@ -65,7 +65,7 @@
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 30px;
-            color: #333;
+            color: #e11d48;
         }
 
         .table-wrapper { 
@@ -170,37 +170,46 @@
 </head>
 <body>
     <div class="container">
-        <h2>나의 테스트 기록</h2>
-
-        {# {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %} #}
-
-        {% if histories %}
-        <div class="table-wrapper"> <table>
+        <h2>내 활동 기록</h2> {% if activities %}
+        <div class="table-responsive">
+            <table class="history-table">
                 <thead>
                     <tr>
-                        <th>이름 1</th>
-                        <th>이름 2</th>
-                        <th>점수</th>
-                        <th>메시지</th>
-                        <th>테스트 날짜</th>
-                        <th style="width: 80px;"></th> </tr>
+                        <th>종류</th> <th>정보</th>
+                        <th>날짜</th>
+                        <th>삭제</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {% for item in histories %}
+                    {% for activity in activities %}
                     <tr>
-                        <td>{{ item.name1 }}</td>
-                        <td>{{ item.name2 }}</td>
-                        <td>{{ item.score }}%</td>
-                        <td>{{ item.msg }}</td>
-                        <td>{{ item.date.strftime('%Y-%m-%d %H:%M') }}</td>
                         <td>
-                            <form action="{{ url_for('main.delete_history', history_id=item.id) }}" method="post" onsubmit="return confirm('정말로 이 기록을 삭제하시겠습니까?');">
+                            {% if activity.type == 'love_test' %}
+                                궁합 테스트
+                            {% elif activity.type == 'sent_letter' %}
+                                쪽지 발송
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if activity.type == 'love_test' %}
+                                <strong>{{ activity.name1 }}</strong> 와(과) <strong>{{ activity.name2 }}</strong>: {{ activity.score }}%
+                                <br>{{ activity.msg }}
+                            {% elif activity.type == 'sent_letter' %}
+                                <strong>받는 사람:</strong> {{ activity.receiver_email }}
+                                <br><strong>보낸 사람:</strong> {{ activity.sender_name }}
+                                <br><strong>내용:</strong> {{ activity.content[:50] }}...
+                                {% if activity.is_anonymous %} (익명) {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <form action="
+                                {% if activity.type == 'love_test' %}
+                                    {{ url_for('main.delete_history', history_id=activity.id) }}
+                                {% elif activity.type == 'sent_letter' %}
+                                    #
+                                {% endif %}
+                            " method="post" onsubmit="return confirm('정말로 이 기록을 삭제하시겠습니까?');">
                                 <button type="submit" class="delete-btn">삭제</button>
                             </form>
                         </td>
@@ -210,8 +219,7 @@
             </table>
         </div>
         {% else %}
-        <p class="no-records-message">아직 궁합 테스트 기록이 없습니다.</p>
-        {% endif %}
+        <p class="no-records-message">아직 기록이 없습니다.</p> {% endif %}
     </div>
 
     <a href="{{ url_for('main.home') }}" class="back-home-btn">< 홈으로 돌아가기</a>

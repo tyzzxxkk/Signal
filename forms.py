@@ -12,6 +12,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('로그인')
 
 class RegisterForm(FlaskForm):
+    name = StringField('이름', validators=[DataRequired()])
     email = StringField('Email', validators=[
         DataRequired(),
         Email(),
@@ -27,8 +28,8 @@ class LetterForm(FlaskForm):
         Email(),
         Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\\\.hs\\\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다.')
     ])
-    anonymous = BooleanField('익명 여부')
-    name = StringField('보내는 사람(학번 이름)', validators=[DataRequired()])
+    anonymous = BooleanField('익명으로 보내기')
+    # name = StringField('보내는 사람(학번 이름)', validators=[DataRequired()]) 자동으로 설정되게 바꿨어염
     content = TextAreaField('내용', validators=[DataRequired()])
     submit = SubmitField('보내기')
 

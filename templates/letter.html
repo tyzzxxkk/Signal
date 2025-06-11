@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGNAL | 받은 편지함</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Pretendard", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden; 
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{{ url_for('static', filename='img/heart.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            filter: blur(16px);
+            z-index: -1;
+        }
+
+        .container {
+            background-color: #ffe1f8bb;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%; 
+            max-width: 600px;
+            max-height: 80vh; 
+            overflow-y: auto; 
+            position: relative;
+            z-index: 10;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #e11d48;
+        }
+
+        .no-letters-message {
+            font-size: 18px;
+            color: #493e4a;
+            margin-top: 30px;
+        }
+
+        .letter-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .letter-item {
+            background-color: #fff;
+            border: 1px solid #ffccd2;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer; 
+        }
+
+        .letter-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .letter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .letter-sender {
+            font-weight: bold;
+            color: #493e4a;
+            font-size: 18px;
+        }
+
+        .letter-timestamp {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .letter-preview {
+            font-size: 15px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+
+        .letter-full-content {
+            font-size: 15px;
+            color: #333;
+            margin-top: 10px;
+            line-height: 1.6;
+            display: none; 
+        }
+
+        .back-home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            color: #e11d48;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.2s;
+            z-index: 10;
+            font-size: 16px;
+        }
+
+        .back-home-btn:hover {
+            color: #be123c;
+        }
+
+        .falling-heart {
+            position: absolute;
+            top: -20px;
+            color: #ff6b81;
+            font-size: 52px;
+            animation: fall linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">&lt; 홈으로 돌아가기</a>
+
+    <div class="container">
+        <h2>받은 편지함</h2>
+        {% if letters %}
+        <ul class="letter-list">
+            {% for letter in letters %}
+            <li class="letter-item" onclick="toggleContent(this)">
+                <div class="letter-header">
+                    <span class="sender-name">{{ letter.sender_name }}</span>
+                    <span class="timestamp">{{ letter.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+                <div class="letter-preview">
+                    {{ letter.content[:20] }}...
+                </div>
+                <div class="letter-full-content" style="display: none;">
+                    {{ letter.content }}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-letters-message">아직 받은 쪽지가 없습니다.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleContent(element) {
+            const preview = element.querySelector('.letter-preview');
+            const fullContent = element.querySelector('.letter-full-content');
+
+            if (fullContent.style.display === 'none' || fullContent.style.display === '') {
+                preview.style.display = 'none';
+                fullContent.style.display = 'block';
+            } else {
+                fullContent.style.display = 'none';
+                preview.style.display = 'block';
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("falling-heart");
+            heart.innerText = "🩷";
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        setInterval(createHeart, 300);
+    </script>
+</body>
+</html>

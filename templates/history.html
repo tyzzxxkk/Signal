@@ -197,12 +197,11 @@
                             {% elif activity.type == 'sent_letter' %}
                                 <strong>받는 사람:</strong> {{ activity.receiver_email }}
                                 <br><strong>보낸 사람:</strong> {{ activity.sender_name }}
-                                <br><strong>내용:</strong> {{ activity.content[:50] }}...
+                                <br><strong>내용:</strong> {{ activity.content[:50] }}{% if activity.content|length > 50 %}...{% endif %}
                                 {% if activity.is_anonymous %} (익명) {% endif %}
                             {% endif %}
                         </td>
-                        <td>{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td>
+                        <td>{{ activity.timestamp | datetime_kst }}</td> <td>
                             <form action="
                                 {% if activity.type == 'love_test' %}
                                     {{ url_for('main.delete_history', history_id=activity.id) }}

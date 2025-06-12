@@ -117,33 +117,46 @@ def letter():
     return render_template('letter.html', letters=received_letters)
 
 
+# routes.py
+
+# ... (기존 import 문은 그대로 유지)
+
 @main_bp.route('/send_letter', methods=['GET', 'POST'])
 @login_required
 def send_letter():
     form = LetterForm()
     if form.validate_on_submit():
-        receiver_email = form.receiver_email.data
-        content = form.content.data 
+        # form.receiver_email.data 에는 이제 '이름'이 들어옵니다.
+        # 이 이름으로 실제 사용자 이메일을 찾아야 합니다.
+        receiver_name_or_email_input = form.receiver_email.data
+        content = form.content.data
         is_anonymous = form.anonymous.data
 
-        # 1. 수신자 이메일 유효성 검사 (실제로 존재하는 사용자인지)
-        receiver_user = User.query.filter_by(email=receiver_email).first()
+        # 이름으로 사용자 찾기
+        receiver_user = User.query.filter_by(name=receiver_name_or_email_input).first()
+
+        # 만약 이름으로 찾지 못했다면, 이메일로 다시 시도해볼 수 있습니다.
+        # (혹시 사용자가 자동완성을 사용하지 않고 직접 이메일을 입력한 경우를 대비)
         if not receiver_user:
-            flash('받는 사람 이메일 주소가 존재하지 않는 사용자입니다.', 'danger')
+            receiver_user = User.query.filter_by(email=receiver_name_or_email_input).first()
+
+        if not receiver_user:
+            flash('존재하지 않는 사용자입니다. 이름을 다시 확인해주세요.', 'danger')
             return render_template('send_letter.html', form=form)
 
-        # 2. 자기 자신에게 쪽지 보내기 방지
+        # 찾은 사용자의 실제 이메일 주소
+        receiver_email = receiver_user.email
+
+        # 자신에게 쪽지 보내기 방지 (이제 정확한 이메일로 비교)
         if receiver_email == current_user.email:
-            flash('자기 자신에게 쪽지를 보낼 수 없습니다.', 'danger')
+            flash('자신에게는 쪽지를 보낼 수 없습니다.', 'danger')
             return render_template('send_letter.html', form=form)
 
-        # 3. 비속어 필터링
+        # 욕설 필터링
         filtered_content = filter_bad_words(content)
 
-        # 4. 보낸 사람 이름 설정
+        # 보낸 사람 이름 설정
         sender_name = "익명" if is_anonymous else current_user.name
-        if not sender_name: 
-            sender_name = current_user.name
 
         try:
             new_letter = Letter(
@@ -151,19 +164,19 @@ def send_letter():
                 receiver_email=receiver_email,
                 sender_name=sender_name,
                 content=filtered_content,
-                timestamp=datetime.datetime.utcnow(),
-                is_anonymous=is_anonymous
+                is_anonymous=is_anonymous,
+                timestamp=datetime.datetime.utcnow()
             )
             db.session.add(new_letter)
             db.session.commit()
             flash('쪽지가 성공적으로 발송되었습니다!', 'success')
-            return redirect(url_for('main.home'))
-        except Exception as e: # DB 저장 등 다른 일반적인 오류 처리
-            current_app.logger.error(f"Error saving letter to DB or unexpected error: {e}")
+            return render_template('send_letter.html', form=LetterForm()) 
+        except Exception as e:
+            db.session.rollback()
             flash(f'쪽지 발송 중 오류가 발생했습니다: {e}', 'danger')
-            db.session.rollback() # 오류 발생 시 DB 변경사항 롤백
-            return render_template('send_letter.html', form=form)
+            current_app.logger.error(f"Error sending letter: {e}")
 
+    # GET 요청이거나 폼 유효성 검사 실패 시
     return render_template('send_letter.html', form=form)
 
 @main_bp.route('/search_user_email', methods=['GET'])

@@ -114,7 +114,7 @@
         .flash-success {
             color: green;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-align: center;
             display: block;
             margin: 0 auto;
@@ -123,16 +123,16 @@
         .flash-danger, .flash-warning {
             color: red;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-align: center;
             display: block;
             margin: 0 auto;
             width: fit-content;
         }
         .flash-info {
-            color: blue;
+            color: orange;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-align: center;
             display: block;
             margin: 0 auto;
@@ -183,15 +183,40 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <form method="POST">
+
+        {# receiver_display_name 필드의 오류 메시지 표시 #}
+        {% if form.receiver_display_name.errors %}
+            {% for error in form.receiver_display_name.errors %}
+            <div class="flash flash-danger">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {# receiver_email (숨겨진) 필드의 오류 메시지 표시 #}
+        {% if form.receiver_email.errors %}
+            {% for error in form.receiver_email.errors %}
+            <div class="flash flash-danger">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {% if form.content.errors %}
+            {% for error in form.content.errors %}
+            <div class="flash flash-danger">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" id="letterForm">
             {{ form.hidden_tag() }}
-            {{ form.receiver_email(id="receiver_email_input", placeholder="받는 사람 이름 또는 이메일") }}
-            <div id="email_suggestions" class="suggestions" style="display: none;"></div>
-            {{ form.content(placeholder="내용을 입력하세요") }}
-            <div style="text-align: left; margin-top: 10px; margin-bottom: 20px;">
-                {{ form.anonymous() }} 익명으로 보내기
+            <div class="form-group">
+                {{ form.receiver_display_name(class="form-input", placeholder="받는 사람의 이름 또는 이메일 검색") }}
+                
+                {{ form.receiver_email(type="hidden") }} 
+                
+                <div id="email_suggestions" class="suggestions" style="display: none;"></div>
             </div>
-            <button type="submit">보내기</button>
+
+            {{ form.content(class="form-textarea", placeholder="내용을 입력하세요") }}
+            <div style="text-align: left; margin-top: 10px; margin-bottom: 20px;">
+                {{ form.anonymous(class="form-checkbox") }} 익명으로 보내기
+            </div>
+            <button type="submit" class="submit-btn">보내기</button>
         </form>
     </div>
 
@@ -216,14 +241,17 @@
 
         setInterval(createHeart, 300);
 
-        // 이메일 검색 및 자동 완성
-        const receiverEmailInput = document.getElementById('receiver_email_input');
+        const receiverDisplayNameInput = document.getElementById('receiver_display_name'); // 사용자에게 보여지는 필드
+        const receiverEmailHiddenInput = document.getElementById('receiver_email'); // 실제 이메일 필드 (숨겨짐)
         const emailSuggestionsDiv = document.getElementById('email_suggestions');
+        const letterForm = document.getElementById('letterForm');
         let debounceTimer;
 
-        receiverEmailInput.addEventListener('input', function() {
+        receiverDisplayNameInput.addEventListener('input', function() {
             clearTimeout(debounceTimer);
             const query = this.value.trim();
+
+            receiverEmailHiddenInput.value = ''; 
 
             if (query.length === 0) {
                 emailSuggestionsDiv.innerHTML = '';
@@ -232,26 +260,26 @@
             }
 
             debounceTimer = setTimeout(() => {
-                if (query.length > 0) { // 1글자 이상 입력 시 검색 시작
+                if (query.length > 0) {
                     fetch(`/search_user_email?query=${encodeURIComponent(query)}`)
                         .then(response => response.json())
                         .then(data => {
-                            emailSuggestionsDiv.innerHTML = ''; // 기존 목록 초기화
+                            emailSuggestionsDiv.innerHTML = '';
                             if (data.length > 0) {
                                 data.forEach(item => {
                                     const div = document.createElement('div');
-                                    // 이름과 이메일을 함께 표시 (예: 홍길동 <hong.gildong@e-mirim.hs.kr>)
-                                    // 이름이 없을 경우 이메일의 로컬 파트만 표시
-                                    const display_name = item.name ? item.name : item.email.split('@')[0];
-                                    div.textContent = `${item.display_name} <${item.email}>`;
+                                    div.classList.add('suggestion-item');
+                                    const display_text = item.name ? `${item.name} <${item.email}>` : `${item.display_name} <${item.email}>`;
+                                    div.textContent = display_text;
+                                    
                                     div.addEventListener('click', () => {
-                                        // 클릭 시 이메일만 입력 필드에 채움 => 이름으로 변경
-                                        receiverEmailInput.value = item.display_name;
-                                        emailSuggestionsDiv.style.display = 'none'; // 목록 숨기기
+                                        receiverDisplayNameInput.value = item.display_name; 
+                                        receiverEmailHiddenInput.value = item.email; 
+                                        emailSuggestionsDiv.style.display = 'none'; 
                                     });
                                     emailSuggestionsDiv.appendChild(div);
                                 });
-                                emailSuggestionsDiv.style.display = 'block'; // 추천 목록 표시
+                                emailSuggestionsDiv.style.display = 'block';
                             } else {
                                 emailSuggestionsDiv.style.display = 'none'; 
                             }
@@ -262,15 +290,22 @@
                             emailSuggestionsDiv.style.display = 'block';
                         });
                 } else {
-                    emailSuggestionsDiv.style.display = 'none'; // 쿼리 길이가 짧으면 숨김
+                    emailSuggestionsDiv.style.display = 'none';
                 }
             }, 300); 
         });
 
         // 입력 필드 외부 클릭 시 추천 목록 숨기기
         document.addEventListener('click', function(event) {
-            if (!receiverEmailInput.contains(event.target) && !emailSuggestionsDiv.contains(event.target)) {
+            if (!receiverDisplayNameInput.contains(event.target) && !emailSuggestionsDiv.contains(event.target)) {
                 emailSuggestionsDiv.style.display = 'none';
+            }
+        });
+
+        // 폼 제출 시, 만약 자동완성을 사용하지 않고 직접 이메일을 입력했을 경우
+        letterForm.addEventListener('submit', function(event) {
+            if (!receiverEmailHiddenInput.value && receiverDisplayNameInput.value) {
+                receiverEmailHiddenInput.value = receiverDisplayNameInput.value.trim();
             }
         });
     </script>

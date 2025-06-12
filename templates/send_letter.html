@@ -54,10 +54,14 @@
         textarea {
             width: 95.5%;
             padding: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
+        }
+
+        .form-group {
+            margin-top: 20px;
         }
 
         button {
@@ -184,13 +188,11 @@
         {% endif %}
         {% endwith %}
 
-        {# receiver_display_name 필드의 오류 메시지 표시 #}
         {% if form.receiver_display_name.errors %}
             {% for error in form.receiver_display_name.errors %}
             <div class="flash flash-danger">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        {# receiver_email (숨겨진) 필드의 오류 메시지 표시 #}
         {% if form.receiver_email.errors %}
             {% for error in form.receiver_email.errors %}
             <div class="flash flash-danger">{{ error }}</div>

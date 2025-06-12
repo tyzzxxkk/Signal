@@ -47,7 +47,7 @@
 
         h2 {
             font-size: 32px;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             color: #e11d48;
         }
 
@@ -161,10 +161,10 @@
                     {% else %}
                         <span>{{ letter.sender_name }}</span>
                     {% endif %}
-                    <span class="letter-date">{{ letter.timestamp | datetime_kst }}</span> </div>
-                <div class="letter-preview">
+                    <div class="letter-preview">
                     {{ letter.content[:20] }}{% if letter.content|length > 20 %}...{% endif %}
                 </div>
+                    <span class="letter-date">{{ letter.timestamp | datetime_kst }}</span> </div>
                 <div class="letter-full-content">
                     {{ letter.content }}
                 </div>

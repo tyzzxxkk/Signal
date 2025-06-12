@@ -149,22 +149,23 @@
     </style>
 </head>
 <body>
-    <a href="{{ url_for('main.home') }}" class="back-home-btn">&lt; 홈으로 돌아가기</a>
-
     <div class="container">
         <h2>받은 편지함</h2>
         {% if letters %}
         <ul class="letter-list">
             {% for letter in letters %}
-            <li class="letter-item" onclick="toggleContent(this)">
+            <li onclick="toggleContent(this)">
                 <div class="letter-header">
-                    <span class="sender-name">{{ letter.sender_name }}</span>
-                    <span class="timestamp">{{ letter.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
-                </div>
+                    {% if letter.is_anonymous %}
+                        <span>익명</span>
+                    {% else %}
+                        <span>{{ letter.sender_name }}</span>
+                    {% endif %}
+                    <span class="letter-date">{{ letter.timestamp | datetime_kst }}</span> </div>
                 <div class="letter-preview">
-                    {{ letter.content[:20] }}...
+                    {{ letter.content[:20] }}{% if letter.content|length > 20 %}...{% endif %}
                 </div>
-                <div class="letter-full-content" style="display: none;">
+                <div class="letter-full-content">
                     {{ letter.content }}
                 </div>
             </li>
@@ -174,6 +175,8 @@
         <p class="no-letters-message">아직 받은 쪽지가 없습니다.</p>
         {% endif %}
     </div>
+
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">< 홈으로 돌아가기</a>
 
     <script>
         function toggleContent(element) {

@@ -3,37 +3,45 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from config import Config
 from extensions import db, login_manager, migrate
-from routes import main_bp  
-from auth import auth_bp   
+from routes import main_bp
+from auth import auth_bp
 from flask_migrate import Migrate
+import datetime 
+from pytz import timezone
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # 확장 모듈 등록
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    # 로그인 안한 사용자가 접근 시 리다이렉트할 페이지
     login_manager.login_view = 'auth.login'
 
-    # 로그인 유저 로드 함수
     from models import User
 
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(User, int(user_id))
 
-    # 블루프린트 등록
+    @app.template_filter('datetime_kst')
+    def format_datetime_kst(dt):
+        if dt:
+            if dt.tzinfo is None:
+                utc_dt = timezone('UTC').localize(dt)
+            else:
+                utc_dt = dt.astimezone(timezone('UTC')) 
+
+            kst_dt = utc_dt.astimezone(timezone('Asia/Seoul'))
+            return kst_dt.strftime('%Y년 %m월 %d일 %H:%M') 
+        return ''
+
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
 
-    # 에러 처리
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('404.html'), 404

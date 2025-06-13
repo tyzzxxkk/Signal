@@ -39,7 +39,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 400px;
-            position: relative; 
+            position: relative;
         }
 
         h2 {
@@ -124,7 +124,9 @@
             margin: 0 auto;
             width: fit-content;
         }
-        .flash-danger, .flash-warning {
+
+        .flash-danger,
+        .flash-warning {
             color: red;
             font-size: 14px;
             margin-bottom: 20px;
@@ -133,6 +135,7 @@
             margin: 0 auto;
             width: fit-content;
         }
+
         .flash-info {
             color: orange;
             font-size: 14px;
@@ -147,14 +150,14 @@
             border: 1px solid #ddd;
             max-height: 150px;
             overflow-y: auto;
-            position: absolute; 
-            width: calc(100% - 80px); 
+            position: absolute;
+            width: calc(100% - 80px);
             background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 100;
             left: 50%;
             transform: translateX(-50%);
-            margin-top: -15px; 
+            margin-top: -15px;
             border-top: none;
             border-radius: 0 0 8px 8px;
             text-align: left;
@@ -189,28 +192,23 @@
         {% endwith %}
 
         {% if form.receiver_display_name.errors %}
-            {% for error in form.receiver_display_name.errors %}
-            <div class="flash flash-danger">{{ error }}</div>
-            {% endfor %}
+        {% for error in form.receiver_display_name.errors %}
+        <div class="flash flash-danger">{{ error }}</div>
+        {% endfor %}
         {% endif %}
         {% if form.receiver_email.errors %}
-            {% for error in form.receiver_email.errors %}
-            <div class="flash flash-danger">{{ error }}</div>
-            {% endfor %}
+        {% for error in form.receiver_email.errors %}
+        <div class="flash flash-danger">{{ error }}</div>
+        {% endfor %}
         {% endif %}
-        {% if form.content.errors %}
-            {% for error in form.content.errors %}
-            <div class="flash flash-danger">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        
+
         <form method="post" id="letterForm">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.receiver_display_name(class="form-input", placeholder="받는 사람의 이름 또는 이메일 검색") }}
-                
-                {{ form.receiver_email(type="hidden") }} 
-                
+
+                {{ form.receiver_email(type="hidden") }}
+
                 <div id="email_suggestions" class="suggestions" style="display: none;"></div>
             </div>
 
@@ -222,95 +220,94 @@
         </form>
     </div>
 
-    <a href="{{ url_for('main.home') }}" class="back-home-btn">< 홈으로 돌아가기</a>
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">
+        < 홈으로 돌아가기</a>
 
-    <script>
-        function createHeart() {
-            const heart = document.createElement("div");
-            heart.classList.add("falling-heart");
-            heart.innerText = "🩷";
+            <script>
+                function createHeart() {
+                    const heart = document.createElement("div");
+                    heart.classList.add("falling-heart");
+                    heart.innerText = "🩷";
 
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-            heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+                    heart.style.left = Math.random() * 100 + "vw";
+                    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+                    heart.style.fontSize = (Math.random() * 10 + 16) + "px";
 
-            document.body.appendChild(heart);
+                    document.body.appendChild(heart);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
-
-        setInterval(createHeart, 300);
-
-        const receiverDisplayNameInput = document.getElementById('receiver_display_name'); // 사용자에게 보여지는 필드
-        const receiverEmailHiddenInput = document.getElementById('receiver_email'); // 실제 이메일 필드 (숨겨짐)
-        const emailSuggestionsDiv = document.getElementById('email_suggestions');
-        const letterForm = document.getElementById('letterForm');
-        let debounceTimer;
-
-        receiverDisplayNameInput.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            const query = this.value.trim();
-
-            receiverEmailHiddenInput.value = ''; 
-
-            if (query.length === 0) {
-                emailSuggestionsDiv.innerHTML = '';
-                emailSuggestionsDiv.style.display = 'none';
-                return;
-            }
-
-            debounceTimer = setTimeout(() => {
-                if (query.length > 0) {
-                    fetch(`/search_user_email?query=${encodeURIComponent(query)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            emailSuggestionsDiv.innerHTML = '';
-                            if (data.length > 0) {
-                                data.forEach(item => {
-                                    const div = document.createElement('div');
-                                    div.classList.add('suggestion-item');
-                                    const display_text = item.name ? `${item.name} <${item.email}>` : `${item.display_name} <${item.email}>`;
-                                    div.textContent = display_text;
-                                    
-                                    div.addEventListener('click', () => {
-                                        receiverDisplayNameInput.value = item.display_name; 
-                                        receiverEmailHiddenInput.value = item.email; 
-                                        emailSuggestionsDiv.style.display = 'none'; 
-                                    });
-                                    emailSuggestionsDiv.appendChild(div);
-                                });
-                                emailSuggestionsDiv.style.display = 'block';
-                            } else {
-                                emailSuggestionsDiv.style.display = 'none'; 
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error searching users:', error);
-                            emailSuggestionsDiv.innerHTML = '<div style="color:red; padding: 10px;">검색 중 오류가 발생했습니다.</div>';
-                            emailSuggestionsDiv.style.display = 'block';
-                        });
-                } else {
-                    emailSuggestionsDiv.style.display = 'none';
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
                 }
-            }, 300); 
-        });
 
-        // 입력 필드 외부 클릭 시 추천 목록 숨기기
-        document.addEventListener('click', function(event) {
-            if (!receiverDisplayNameInput.contains(event.target) && !emailSuggestionsDiv.contains(event.target)) {
-                emailSuggestionsDiv.style.display = 'none';
-            }
-        });
+                setInterval(createHeart, 300);
 
-        // 폼 제출 시, 만약 자동완성을 사용하지 않고 직접 이메일을 입력했을 경우
-        letterForm.addEventListener('submit', function(event) {
-            if (!receiverEmailHiddenInput.value && receiverDisplayNameInput.value) {
-                receiverEmailHiddenInput.value = receiverDisplayNameInput.value.trim();
-            }
-        });
-    </script>
+                const receiverDisplayNameInput = document.getElementById('receiver_display_name'); // 사용자에게 보여지는 필드
+                const receiverEmailHiddenInput = document.getElementById('receiver_email'); // 실제 이메일 필드 
+                const emailSuggestionsDiv = document.getElementById('email_suggestions');
+                const letterForm = document.getElementById('letterForm');
+                let debounceTimer;
+
+                receiverDisplayNameInput.addEventListener('input', function () {
+                    clearTimeout(debounceTimer);
+                    const query = this.value.trim();
+
+                    receiverEmailHiddenInput.value = '';
+
+                    if (query.length === 0) {
+                        emailSuggestionsDiv.innerHTML = '';
+                        emailSuggestionsDiv.style.display = 'none';
+                        return;
+                    }
+
+                    debounceTimer = setTimeout(() => {
+                        if (query.length > 0) {
+                            fetch(`/search_user_email?query=${encodeURIComponent(query)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    emailSuggestionsDiv.innerHTML = '';
+                                    if (data.length > 0) {
+                                        data.forEach(item => {
+                                            const div = document.createElement('div');
+                                            div.classList.add('suggestion-item');
+                                            const display_text = item.name ? `${item.name} <${item.email}>` : `${item.display_name} <${item.email}>`;
+                                            div.textContent = display_text;
+
+                                            div.addEventListener('click', () => {
+                                                receiverDisplayNameInput.value = item.display_name;
+                                                receiverEmailHiddenInput.value = item.email;
+                                                emailSuggestionsDiv.style.display = 'none';
+                                            });
+                                            emailSuggestionsDiv.appendChild(div);
+                                        });
+                                        emailSuggestionsDiv.style.display = 'block';
+                                    } else {
+                                        emailSuggestionsDiv.style.display = 'none';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error searching users:', error);
+                                    emailSuggestionsDiv.innerHTML = '<div style="color:red; padding: 10px;">검색 중 오류가 발생했습니다.</div>';
+                                    emailSuggestionsDiv.style.display = 'block';
+                                });
+                        } else {
+                            emailSuggestionsDiv.style.display = 'none';
+                        }
+                    }, 300);
+                });
+
+                document.addEventListener('click', function (event) {
+                    if (!receiverDisplayNameInput.contains(event.target) && !emailSuggestionsDiv.contains(event.target)) {
+                        emailSuggestionsDiv.style.display = 'none';
+                    }
+                });
+
+                letterForm.addEventListener('submit', function (event) {
+                    if (!receiverEmailHiddenInput.value && receiverDisplayNameInput.value) {
+                        receiverEmailHiddenInput.value = receiverDisplayNameInput.value.trim();
+                    }
+                });
+            </script>
 </body>
 
 </html>

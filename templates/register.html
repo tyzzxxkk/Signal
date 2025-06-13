@@ -115,11 +115,11 @@
         <div class="flash">{{ error }}</div>
         {% endfor %}
         {% endif %}
-        {% if form.name.errors %} 
-        {% for error in form.name.errors %} 
-        <div class="flash">{{ error }}</div> 
+        {% if form.name.errors %}
+        {% for error in form.name.errors %}
+        <div class="flash">{{ error }}</div>
         {% endfor %}
-        {% endif %} 
+        {% endif %}
 
         <form method="post">
             {{ form.hidden_tag() }}

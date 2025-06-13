@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGNAL | 내 활동 기록</title> <style>
+    <title>SIGNAL | 내 활동 기록</title>
+    <style>
         body {
             margin: 0;
             padding: 0;
@@ -49,10 +51,10 @@
         }
 
         .container {
-            background-color: #ffe1f8bb; 
+            background-color: #ffe1f8bb;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 850px;
             text-align: center;
             max-height: 90vh;
@@ -69,7 +71,7 @@
             color: #e11d48;
         }
 
-        .table-wrapper { 
+        .table-wrapper {
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 20px;
@@ -84,7 +86,8 @@
             table-layout: fixed;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             border-bottom: 1px solid #eee;
             text-align: center;
@@ -142,7 +145,8 @@
             text-align: center;
         }
 
-        .flash-danger, .flash-warning {
+        .flash-danger,
+        .flash-warning {
             background-color: #f8d7da;
             color: #721c24;
             padding: 10px;
@@ -169,17 +173,18 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>내 활동 기록</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
-        
+
         {% if all_activities %}
         <div class="table-wrapper">
             <table class="history-table">
@@ -187,7 +192,7 @@
                     <tr>
                         <th>종류</th>
                         <th>정보</th>
-                        <th>내용</th> 
+                        <th>내용</th>
                         <th>날짜</th>
                         <th></th>
                     </tr>
@@ -197,26 +202,27 @@
                     <tr>
                         <td>
                             {% if activity.type == 'love_test' %}
-                                궁합 테스트
+                            궁합 테스트
                             {% elif activity.type == 'sent_letter' %}
-                                편지 보내기
+                            편지 보내기
                             {% endif %}
                         </td>
                         <td>
                             {% if activity.type == 'love_test' %}
-                                <strong>{{ activity.name1 }}</strong> 와(과) <strong>{{ activity.name2 }}</strong>: {{ activity.score }}%
+                            <strong>{{ activity.name1 }}</strong> 와(과) <strong>{{ activity.name2 }}</strong>: {{
+                            activity.score }}%
                             {% elif activity.type == 'sent_letter' %}
-                                <strong>받는 사람:</strong> {{ activity.receiver_name }} 
-                                <br><strong>보낸 사람:</strong> {{ activity.sender_name }}
+                            <strong>받는 사람:</strong> {{ activity.receiver_name }}
+                            <br><strong>보낸 사람:</strong> {{ activity.sender_name }}
                             {% endif %}
                         </td>
                         <td>
                             {% if activity.type == 'sent_letter' %}
-                                {{ activity.content[:50] }}{% if activity.content|length > 50 %}...{% endif %}
-                                {% if activity.is_anonymous %} (익명) {% endif %}
+                            {{ activity.content[:50] }}{% if activity.content|length > 50 %}...{% endif %}
+                            {% if activity.is_anonymous %} (익명) {% endif %}
                             {% elif activity.type == 'love_test' %}
-                                {{ activity.message }} {% else %}
-                                - {% endif %}
+                            {{ activity.message }} {% else %}
+                            - {% endif %}
                         </td>
                         <td>{{ activity.timestamp | datetime_kst }}</td>
                         <td>
@@ -239,26 +245,28 @@
         {% endif %}
     </div>
 
-    <a href="{{ url_for('main.home') }}" class="back-home-btn">< 홈으로 돌아가기</a>
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">
+        < 홈으로 돌아가기</a>
 
-    <script>
-        function createHeart() {
-            const heart = document.createElement("div");
-            heart.classList.add("falling-heart");
-            heart.innerText = "🩷";
+            <script>
+                function createHeart() {
+                    const heart = document.createElement("div");
+                    heart.classList.add("falling-heart");
+                    heart.innerText = "🩷";
 
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-            heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+                    heart.style.left = Math.random() * 100 + "vw";
+                    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+                    heart.style.fontSize = (Math.random() * 10 + 16) + "px";
 
-            document.body.appendChild(heart);
+                    document.body.appendChild(heart);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }
 
-        setInterval(createHeart, 300);
-    </script>
+                setInterval(createHeart, 300);
+            </script>
 </body>
+
 </html>

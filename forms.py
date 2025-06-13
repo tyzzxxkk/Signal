@@ -32,14 +32,16 @@ class LetterForm(FlaskForm):
 
     receiver_email = HiddenField('받는 사람 이메일', validators=[
         DataRequired(),
-        Email(message='유효한 이메일 주소가 아닙니다.'), 
-        Regexp('^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$', message='미림마이스터고등학교의 이메일만 가능합니다.')
+        Email()
     ])
+
+    def validate_receiver_email(self, field):
+        from models import User 
+
+        user = User.query.filter_by(email=field.data).first()
+        if not user:
+            raise ValidationError('가입하지 않은 사용자입니다.')
     
     content = TextAreaField('내용', validators=[DataRequired(), Length(min=1, max=500, message='내용은 1자 이상 500자 이하로 작성해주세요.')])
     anonymous = BooleanField('익명으로 보내기')
     submit = SubmitField('보내기')
-
-    def validate_receiver_display_name(self, field):
-        if not self.receiver_email.data:
-            raise ValidationError('받는 사람을 정확히 선택하거나 유효한 이메일 주소를 입력해주세요.')

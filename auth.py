@@ -22,7 +22,7 @@ def login():
         else:
             login_user(user)
             # flash('로그인 성공!', 'success')
-            return redirect(url_for('main.home'))  # 로그인 후 홈으로 이동
+            return redirect(url_for('main.home'))  
 
     return render_template('login.html', form=form)
 

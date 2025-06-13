@@ -69,7 +69,7 @@
             color: #e11d48;
         }
 
-        .table-wrapper { /* .table-responsive 대신 .table-wrapper 사용 (CSS 통일) */
+        .table-wrapper { 
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 20px;
@@ -179,8 +179,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-
-        {# all_activities 변수를 사용합니다. routes.py에서 activities를 all_activities로 바꾸었으니 이 변수를 사용해야 합니다. #}
+        
         {% if all_activities %}
         <div class="table-wrapper">
             <table class="history-table">
@@ -194,7 +193,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {# all_activities 리스트를 순회합니다. #}
                     {% for activity in all_activities %}
                     <tr>
                         <td>
@@ -213,7 +211,6 @@
                             {% endif %}
                         </td>
                         <td>
-                            {# '내용' 컬럼: sent_letter만 content를 가지고, love_test는 message를 가집니다. #}
                             {% if activity.type == 'sent_letter' %}
                                 {{ activity.content[:50] }}{% if activity.content|length > 50 %}...{% endif %}
                                 {% if activity.is_anonymous %} (익명) {% endif %}

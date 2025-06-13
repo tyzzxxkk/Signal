@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, HiddenField # HiddenField 추가
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, ValidationError # ValidationError 추가
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, HiddenField 
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, ValidationError 
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[

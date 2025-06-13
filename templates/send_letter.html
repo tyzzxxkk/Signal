@@ -244,7 +244,7 @@
         setInterval(createHeart, 300);
 
         const receiverDisplayNameInput = document.getElementById('receiver_display_name'); // 사용자에게 보여지는 필드
-        const receiverEmailHiddenInput = document.getElementById('receiver_email'); // 실제 이메일 필드 (숨겨짐)
+        const receiverEmailHiddenInput = document.getElementById('receiver_email'); // 실제 이메일 필드 
         const emailSuggestionsDiv = document.getElementById('email_suggestions');
         const letterForm = document.getElementById('letterForm');
         let debounceTimer;
@@ -297,14 +297,12 @@
             }, 300); 
         });
 
-        // 입력 필드 외부 클릭 시 추천 목록 숨기기
         document.addEventListener('click', function(event) {
             if (!receiverDisplayNameInput.contains(event.target) && !emailSuggestionsDiv.contains(event.target)) {
                 emailSuggestionsDiv.style.display = 'none';
             }
         });
 
-        // 폼 제출 시, 만약 자동완성을 사용하지 않고 직접 이메일을 입력했을 경우
         letterForm.addEventListener('submit', function(event) {
             if (!receiverEmailHiddenInput.value && receiverDisplayNameInput.value) {
                 receiverEmailHiddenInput.value = receiverDisplayNameInput.value.trim();

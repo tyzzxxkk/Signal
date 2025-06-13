@@ -23,7 +23,7 @@ def guest_home():
     return render_template('guest_home.html')
 
 @main_bp.route('/love_test', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def love_test():
     form = LoveForm()
     result = None
@@ -34,19 +34,21 @@ def love_test():
         score, msg = love_result_message(name1, name2)
         result = {'name1': name1, 'name2': name2, 'score': score, 'msg': msg}
 
-        try:
-            history = LoveHistory(user_id=current_user.id,
+        
+        if current_user.is_authenticated:
+            try:
+                history = LoveHistory(user_id=current_user.id,
                                   name1=name1,
                                   name2=name2,
                                   score=score,
                                   message=msg, 
                                   timestamp=datetime.datetime.utcnow())
-            db.session.add(history)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            flash(f"기록 저장 중 오류가 발생했습니다: {e}", 'danger')
-            current_app.logger.error(f"Error saving love history: {e}")
+                db.session.add(history)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                flash(f"기록 저장 중 오류가 발생했습니다: {e}", 'danger')
+                current_app.logger.error(f"Error saving love history: {e}")
 
     return render_template('love_test.html', form=form, result=result)
 

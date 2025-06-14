@@ -153,27 +153,27 @@
     {% endif %}
   </div>
 
-  <a href="{{ url_for('main.home') }}" class="back-home-btn">< 홈으로 돌아가기</a>
+  <a href="{{ url_for('main.guest_home') }}" class="back-home-btn">< 홈으로 돌아가기</a>
 
-  <script>
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("falling-heart");
-      heart.innerText = "🩷";
+      <script>
+        function createHeart() {
+          const heart = document.createElement("div");
+          heart.classList.add("falling-heart");
+          heart.innerText = "🩷";
 
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-      heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+          heart.style.fontSize = (Math.random() * 10 + 16) + "px";
 
-      document.body.appendChild(heart);
+          document.body.appendChild(heart);
 
-      setTimeout(() => {
-        heart.remove();
-      }, 5000);
-    }
+          setTimeout(() => {
+            heart.remove();
+          }, 5000);
+        }
 
-    setInterval(createHeart, 300);
-  </script>
+        setInterval(createHeart, 300);
+      </script>
 </body>
 
 </html>

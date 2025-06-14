@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -86,30 +87,12 @@
       margin-top: 20px;
       font-size: 14px;
       color: #444;
+      text-decoration: none;
     }
-
-    .history-link:hover {
-      text-decoration: underline;
-    }
-
-    .falling-heart {
-      position: absolute;
-      top: -20px;
-      color: #ff6b81;
-      font-size: 52px;
-      animation: fall linear infinite;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(110vh);
-        opacity: 0;
-      }
-    }
+    
   </style>
 </head>
+
 <body>
   <a href="/logout" class="login-btn">로그인하기</a>
 
@@ -120,27 +103,10 @@
     <div>
       <a href="/love_test" class="btn">궁합 테스트</a>
       <a href="/send_letter" class="btn">쪽지 보내기</a>
+      <a href="/letter" class="btn">편지함 보기</a>
     </div>
+    <a href="/history" class="history-link">히스토리 보기</a>
   </div>
-
-  <script>
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("falling-heart");
-      heart.innerText = "🩷";
-
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-      heart.style.fontSize = (Math.random() * 10 + 16) + "px";
-
-      document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 5000);
-    }
-
-    setInterval(createHeart, 300);
-  </script>
 </body>
+
 </html>

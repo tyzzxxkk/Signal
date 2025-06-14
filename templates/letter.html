@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
             align-items: center;
             height: 100vh;
             position: relative;
-            overflow: hidden; 
+            overflow: hidden;
         }
 
         body::before {
@@ -37,17 +38,17 @@
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 80%; 
+            width: 80%;
             max-width: 600px;
-            max-height: 80vh; 
-            overflow-y: auto; 
+            max-height: 80vh;
+            overflow-y: auto;
             position: relative;
             z-index: 10;
         }
 
         h2 {
             font-size: 32px;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             color: #e11d48;
         }
 
@@ -72,7 +73,7 @@
             text-align: left;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease-in-out;
-            cursor: pointer; 
+            cursor: pointer;
         }
 
         .letter-item:hover {
@@ -102,7 +103,7 @@
             color: #666;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; 
+            text-overflow: ellipsis;
         }
 
         .letter-full-content {
@@ -110,7 +111,7 @@
             color: #333;
             margin-top: 10px;
             line-height: 1.6;
-            display: none; 
+            display: none;
         }
 
         .back-home-btn {
@@ -148,23 +149,26 @@
         }
     </style>
 </head>
-<body>
-    <a href="{{ url_for('main.home') }}" class="back-home-btn">&lt; 홈으로 돌아가기</a>
 
+<body>
     <div class="container">
         <h2>받은 편지함</h2>
         {% if letters %}
         <ul class="letter-list">
             {% for letter in letters %}
-            <li class="letter-item" onclick="toggleContent(this)">
+            <li onclick="toggleContent(this)">
                 <div class="letter-header">
-                    <span class="sender-name">{{ letter.sender_name }}</span>
-                    <span class="timestamp">{{ letter.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                    {% if letter.is_anonymous %}
+                    <span>익명</span>
+                    {% else %}
+                    <span>{{ letter.sender_name }}</span>
+                    {% endif %}
+                    <div class="letter-preview">
+                        {{ letter.content[:20] }}{% if letter.content|length > 20 %}...{% endif %}
+                    </div>
+                    <span class="letter-date">{{ letter.timestamp | datetime_kst }}</span>
                 </div>
-                <div class="letter-preview">
-                    {{ letter.content[:20] }}...
-                </div>
-                <div class="letter-full-content" style="display: none;">
+                <div class="letter-full-content">
                     {{ letter.content }}
                 </div>
             </li>
@@ -175,37 +179,41 @@
         {% endif %}
     </div>
 
-    <script>
-        function toggleContent(element) {
-            const preview = element.querySelector('.letter-preview');
-            const fullContent = element.querySelector('.letter-full-content');
+    <a href="{{ url_for('main.home') }}" class="back-home-btn">
+        < 홈으로 돌아가기</a>
 
-            if (fullContent.style.display === 'none' || fullContent.style.display === '') {
-                preview.style.display = 'none';
-                fullContent.style.display = 'block';
-            } else {
-                fullContent.style.display = 'none';
-                preview.style.display = 'block';
-            }
-        }
+            <script>
+                function toggleContent(element) {
+                    const preview = element.querySelector('.letter-preview');
+                    const fullContent = element.querySelector('.letter-full-content');
 
-        function createHeart() {
-            const heart = document.createElement("div");
-            heart.classList.add("falling-heart");
-            heart.innerText = "🩷";
+                    if (fullContent.style.display === 'none' || fullContent.style.display === '') {
+                        preview.style.display = 'none';
+                        fullContent.style.display = 'block';
+                    } else {
+                        fullContent.style.display = 'none';
+                        preview.style.display = 'block';
+                    }
+                }
 
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-            heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+                function createHeart() {
+                    const heart = document.createElement("div");
+                    heart.classList.add("falling-heart");
+                    heart.innerText = "🩷";
 
-            document.body.appendChild(heart);
+                    heart.style.left = Math.random() * 100 + "vw";
+                    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+                    heart.style.fontSize = (Math.random() * 10 + 16) + "px";
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
+                    document.body.appendChild(heart);
 
-        setInterval(createHeart, 300);
-    </script>
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }
+
+                setInterval(createHeart, 300);
+            </script>
 </body>
+
 </html>
